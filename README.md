@@ -1,7 +1,7 @@
 # Burp-Plugin-Develop
 
 
-## 基于Burp开发的被动扫描探测jwt签名算法None  
+## 基于Burp开发的探测jwt签名算法None  
   
 开发目的：  
   
