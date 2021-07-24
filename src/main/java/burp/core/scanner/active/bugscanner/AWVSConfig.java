@@ -8,6 +8,17 @@ import java.util.Properties;
 * 静态配置类
 * */
 public class AWVSConfig {
+
+    private String proxyServerAddr;
+    private String proxyServerPort;
+    private String awvsServerAddr;
+    private String awvsAPIKey;
+    private String scanType;
+    private String scanSpeed;
+    private String limitCrawlerScope;
+    private PrintWriter stdout;
+    private IBurpExtenderCallbacks callbacks;
+
     public String getProxyServerAddr() {
         return proxyServerAddr;
     }
@@ -35,16 +46,6 @@ public class AWVSConfig {
     public String getLimitCrawlerScope() {
         return limitCrawlerScope;
     }
-
-    private String proxyServerAddr;
-    private String proxyServerPort;
-    private String awvsServerAddr;
-    private String awvsAPIKey;
-    private String scanType;
-    private String scanSpeed;
-    private String limitCrawlerScope;
-    private PrintWriter stdout;
-    private IBurpExtenderCallbacks callbacks;
 
     public AWVSConfig(IBurpExtenderCallbacks callbacks){
         this.callbacks = callbacks;

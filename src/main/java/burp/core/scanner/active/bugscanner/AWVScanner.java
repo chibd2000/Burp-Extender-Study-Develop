@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -35,13 +36,14 @@ public class AWVScanner extends BaseScanner implements ActionListener, Runnable 
         this.httpClientWrapper = new HttpClientWrapper();
         this.burpAnalyzedRequest = new BurpAnalyzedRequest();
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
-        this.initTask();
+        this.initTargetInfor();
     }
 
-    public void initTask(){
+    public void initTargetInfor(){
         String targetUrl = this.burpAnalyzedRequest.getRequestDomain(this.httpRequestResponse);
-        String targetCookie = "1";
-        this.awvsTask = new AWVSTask(this.callbacks, targetUrl, targetCookie);
+        List<String> cookieList = this.burpAnalyzedRequest.getCookies(this.httpRequestResponse);
+        this.stdout.println(cookieList.toString());
+        this.awvsTask = new AWVSTask(this.callbacks, targetUrl, cookieList.toString());
     }
 
     public boolean addTask() {
@@ -68,7 +70,7 @@ public class AWVScanner extends BaseScanner implements ActionListener, Runnable 
     public void configureTask() {
         String configureTaskJsonString = this.awvsTask.getConfigureTaskJsonString();
         this.stdout.println(this.awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/targets/" + this.awvsTask.getTargetId() + "/configuration");
-//        this.stdout.println(configureTaskJsonString);
+        this.stdout.println(configureTaskJsonString);
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("X-Auth", this.awvsTask.AWVSConfig.getAwvsAPIKey());
         headers.put("Content-Type", "application/json");
@@ -84,12 +86,7 @@ public class AWVScanner extends BaseScanner implements ActionListener, Runnable 
         headers.put("X-Auth", awvsTask.AWVSConfig.getAwvsAPIKey());
         headers.put("Content-Type", "application/json");
         String s = this.httpClientWrapper.doPostJson(awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/scans", startTaskJsonString, headers);
-        this.stdout.println(s);
-        if (!s.equals("")){
-            return true;
-        }else{
-            return false;
-        }
+        return s.contains("profile_id") && s.contains("target_id");
     }
 
 

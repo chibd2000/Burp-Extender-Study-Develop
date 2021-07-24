@@ -16,6 +16,15 @@ public class AWVSTask {
 
     private String targetUrl;
     private String targetCookie;
+    private String targetId;
+
+    public AWVSTask(IBurpExtenderCallbacks callbacks, String targetUrl, String targetCookie){
+        this.callbacks = callbacks;
+        this.targetUrl = targetUrl;
+        this.targetCookie = targetCookie;
+        this.stdout = new PrintWriter(callbacks.getStdout(), true);
+        this.AWVSConfig = new AWVSConfig(callbacks);
+    }
 
     public String getTargetUrl() {
         return targetUrl;
@@ -31,16 +40,6 @@ public class AWVSTask {
 
     public void setTargetCookie(String targetCookie) {
         this.targetCookie = targetCookie;
-    }
-
-    private String targetId;
-
-    public AWVSTask(IBurpExtenderCallbacks callbacks, String targetUrl, String targetCookie){
-        this.callbacks = callbacks;
-        this.targetUrl = targetUrl;
-        this.targetCookie = targetCookie;
-        this.stdout = new PrintWriter(callbacks.getStdout(), true);
-        this.AWVSConfig = new AWVSConfig(callbacks);
     }
 
     public void setTargetId(String targetId) {
@@ -79,8 +78,8 @@ public class AWVSTask {
                 "\"protocol\":\"http\"," +
                 "\"address\":\"" + this.AWVSConfig.getProxyServerAddr() + "\"," +
                 "\"port\":\""+ this.AWVSConfig.getProxyServerPort() + "\"}," +
-                "\"technologies\":[]," +
-                "\"custom_headers\":[],\"custom_cookies\":[]," +
+                "\"technologies\": []," +
+                "\"custom_headers\":[],\"custom_cookies\":" + this.targetCookie +"," +
                 "\"debug\":false," +
                 "\"restrict_scans_to_import_files\":false," +
                 "\"client_certificate_password\":\"\"," +

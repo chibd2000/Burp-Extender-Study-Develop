@@ -2,8 +2,11 @@ package burp.utils;
 
 import burp.*;
 import burp.core.scanner.active.jwtscanner.IJwtConstant;
+import com.alibaba.fastjson.JSONObject;
 
+import java.io.PrintWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,9 +17,11 @@ import java.util.regex.Pattern;
 public class BurpAnalyzedRequest {
 
     private IExtensionHelpers helpers;
+    public PrintWriter stdout;
 
     public BurpAnalyzedRequest(){
         this.helpers = BurpExtender.callbacks.getHelpers();
+        this.stdout = new PrintWriter(BurpExtender.callbacks.getStdout(), true);
     }
 
     public String getRequestContent(IHttpRequestResponse requestResponse){
@@ -90,7 +95,11 @@ public class BurpAnalyzedRequest {
         String baseRequestProtocol = baseRequestResponse.getHttpService().getProtocol();
         String baseRequestHost = baseRequestResponse.getHttpService().getHost();
         int baseRequestPort = baseRequestResponse.getHttpService().getPort();
-        return baseRequestProtocol + "://" + baseRequestHost + ":" + baseRequestPort;
+        if (baseRequestPort == 80 || baseRequestPort == 443){
+            return baseRequestProtocol + "://" + baseRequestHost;
+        }else{
+            return baseRequestProtocol + "://" + baseRequestHost + ":" + baseRequestPort;
+        }
     }
 
     public String getRequestPath(IHttpRequestResponse baseRequestResponse){
@@ -125,4 +134,21 @@ public class BurpAnalyzedRequest {
             return this.helpers.addParameter(requestResponse.getRequest(), newParam);
         }
     }
+
+    public List<String> getCookies(IHttpRequestResponse requestResponse){
+        List<IParameter> allParamters = this.getAllParamters(requestResponse);
+        List<String> cookiesList = new ArrayList<>();
+        String url = this.getRequestDomain(requestResponse);
+        for (IParameter targetParam : allParamters) {
+            if (targetParam != null && targetParam.getType() == IParameter.PARAM_COOKIE){
+                JSONObject jsonObject = new JSONObject();
+                String cookie = targetParam.getName() + "=" + targetParam.getValue();
+                jsonObject.put("url", url);
+                jsonObject.put("cookie", cookie);
+                cookiesList.add(jsonObject.toJSONString());
+            }
+        }
+        return cookiesList;
+    }
+
 }
