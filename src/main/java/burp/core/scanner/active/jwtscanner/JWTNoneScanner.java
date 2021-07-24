@@ -1,8 +1,10 @@
 package burp.core.scanner.active.jwtscanner;
 
 import burp.*;
-import burp.core.scanner.active.BaseScanner;
+import burp.core.scanner.active.BaseActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
+import burp.utils.DomainNameRepeat;
+import burp.utils.TimeOutput;
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
@@ -12,24 +14,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JWTNoneScanner extends BaseScanner implements ActionListener {
+public class JWTNoneScanner extends BaseActiveScanner implements ActionListener, Runnable {
 
     private IBurpExtenderCallbacks callbacks;
     private IExtensionHelpers helpers;
     private BurpAnalyzedRequest analyzedRequest;
     private IHttpRequestResponse httpRequestResponse;
     private PrintWriter stdout;
+    public DomainNameRepeat<String, Integer> domainNameRepeat;
+
 
     public JWTNoneScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
-        super("jwtNoneScanner");
+        super("JwtNoneScanner");
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
         this.analyzedRequest = new BurpAnalyzedRequest();
         this.httpRequestResponse = httpRequestResponse;
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
+        this.domainNameRepeat = DomainNameRepeat.getDomainNameMap();
     }
 
     public List<String> getUnsignList(String jwtContent){
@@ -60,7 +67,7 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
     }
 
     /*
-    * 构建三个数据包，进行发包处理
+    * 构建四个数据包，进行发包处理
     * 1、haeders头需要处理
     * 2、cookie头需要处理
     * */
@@ -71,7 +78,9 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
         IRequestInfo RequestInfo = this.helpers.analyzeRequest(requestResponse);
         List<IParameter> parameters = analyzedRequest.getAllParamters(requestResponse);
         List<String> headers = RequestInfo.getHeaders();
+
         for (String noneJwt : unsignList) {
+
             for (int i=0;i<headers.size();i++) {
                 String s = headers.get(i).replaceFirst(IJwtConstant.regexpJwtPattern, noneJwt);
                 if (!s.equals(noneJwt)){
@@ -82,7 +91,6 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
             }
 
             byte[] requestBytes = this.helpers.buildHttpMessage(headers, analyzedRequest.getRequestBody(requestResponse));
-
             for (IParameter parameter : parameters) {
                 String parameterName = parameter.getName();
                 String parameterValue = parameter.getValue();
@@ -91,7 +99,8 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
                     IParameter targetParam = this.helpers.getRequestParameter(requestResponse.getRequest(), parameterName);
                     IParameter iParameter = this.helpers.buildParameter(parameterName, s, IParameter.PARAM_COOKIE);
                     if (targetParam != null && targetParam.getType() == IParameter.PARAM_COOKIE){
-                        this.helpers.updateParameter(requestBytes, iParameter);
+//                        this.helpers.removeParameter(requestBytes, targetParam);
+//                        this.helpers.updateParameter(requestBytes, iParameter);
                         requestBytes = this.helpers.updateParameter(requestBytes, iParameter);
                     }
                 }
@@ -99,8 +108,9 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
 
             IHttpRequestResponse response = this.callbacks.makeHttpRequest(requestResponse.getHttpService(), requestBytes);
             byte[] request = response.getRequest();
-            System.out.println(new String(request));
-            System.out.println("==========================");
+            this.stdout.println("====================");
+            this.stdout.println(new String(request));
+            this.stdout.println("====================");
             responseList.add(response);
         }
 
@@ -117,7 +127,7 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
                 analyzedRequest.getUrl(requestResponse),
                 new IHttpRequestResponse[] { requestResponse },
                 "Jwt None Sign",
-                "Jwt None Sign",
+                "it can help us to get everyone.",
                 "High");
     }
 
@@ -132,6 +142,108 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("jwtScanner click me...");
+        new Thread(this).start();
+    }
+
+    /**
+     * When an object implementing interface <code>Runnable</code> is used
+     * to create a thread, starting the thread causes the object's
+     * <code>run</code> method to be called in that separately executing
+     * thread.
+     * <p>
+     * The general contract of the method <code>run</code> is that it may
+     * take any action whatsoever.
+     *
+     * @see Thread#run()
+     */
+    @Override
+    public void run() {
+        // URL构建
+        String baseRequestDomainName = analyzedRequest.getRequestDomain(this.httpRequestResponse);
+        String baseRequestPath = analyzedRequest.getRequestPath(this.httpRequestResponse);
+        int baseResponseSize = analyzedRequest.getResponseBodySize(this.httpRequestResponse);
+
+        URL baseHttpRequestUrl = null;
+
+        try {
+            baseHttpRequestUrl = new URL(baseRequestDomainName + baseRequestPath);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 检查内容jwt
+        if (!analyzedRequest.getJwtFlag(this.httpRequestResponse)) {
+            this.stdout.println(TimeOutput.formatOutput("未发现存在JWT字段"));
+            return;
+        }
+
+        // 添加任务到面板中等待检测
+        byte[] baseResponse = this.httpRequestResponse.getResponse();
+
+        int tagId = BurpExtender.tags.add(
+                this.getScannerName(),
+                baseHttpRequestUrl.toString(),
+                this.helpers.analyzeResponse(baseResponse).getStatusCode() + "",
+                "[-] waiting for results",
+                this.httpRequestResponse
+        );
+
+        try {
+            String jwt = null;
+            List<IHttpRequestResponse> responseList = null;
+
+            // 开始进行四次请求利用
+            jwt = analyzedRequest.getJwt(this.httpRequestResponse);
+            this.stdout.println(TimeOutput.formatOutput("Find a jwt: " + jwt));
+
+            responseList = this.sendPayload(this.httpRequestResponse, jwt); // 发送payload
+
+            for (IHttpRequestResponse response : responseList) {
+                int responseSize = analyzedRequest.getResponseBodySize(response);
+                if (responseSize != 0){
+                    if (responseSize == baseResponseSize){
+                        BurpExtender.tags.update(
+                                tagId,
+                                this.getScannerName(),
+                                baseHttpRequestUrl.toString(),
+                                analyzedRequest.getStatusCode(response)+"",
+                                "[+] found jwt none",
+                                response
+                        );
+                        break;
+                    }else{
+                        // 未检测出来问题也要更新任务状态至任务栏面板
+                        BurpExtender.tags.update(
+                                tagId,
+                                this.getScannerName(),
+                                baseHttpRequestUrl.toString(),
+                                analyzedRequest.getStatusCode(response)+"",
+                                "[-] not found jwt none",
+                                response
+                        );
+                    }
+                }else{
+                    BurpExtender.tags.update(
+                            tagId,
+                            this.getScannerName(),
+                            baseHttpRequestUrl.toString(),
+                            this.helpers.analyzeResponse(response.getResponse()).getStatusCode() + "",
+                            "[-] JWTScan Something Wrong",
+                            response
+                    );
+                }
+            }
+        } catch (Exception e){
+            // Exception，更新任务状态至任务栏面板
+            BurpExtender.tags.update(
+                    tagId,
+                    this.getScannerName(),
+                    baseHttpRequestUrl.toString(),
+                    this.helpers.analyzeResponse(this.httpRequestResponse.getResponse()).getStatusCode() + "",
+                    "[-] JWTScan Exception",
+                    this.httpRequestResponse
+            );
+        }finally {
+        }
     }
 }

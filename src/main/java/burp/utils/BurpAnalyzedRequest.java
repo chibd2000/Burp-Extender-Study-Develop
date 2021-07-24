@@ -167,11 +167,12 @@ public class BurpAnalyzedRequest {
                 "Except", "Host", "if-Match", "if-Modified-Since", "Range", "Referer",
                 "TE", "User-Agent", "Allow", "Content-Encoding", "Content-Language",
                 "Content-Length", "Content-Location", "Content-MD5", "Content-Range",
-                "Content-Type", "Expires", "Last-Modified"};
+                "Content-Type", "Expires", "Last-Modified", "Cookie", "If-None-Match"};
         for (String currentHeader : headers) {
+
             boolean flag = false;
             for (String commonHeader : commonHeaders) {
-                if (currentHeader.contains(commonHeader))
+                if (currentHeader.toLowerCase().contains(commonHeader.toLowerCase()))
                 {
                     // 如果到这里，那说明当前字段就是通用字段，那这次循环就直接不走了，break掉
                     flag = true;

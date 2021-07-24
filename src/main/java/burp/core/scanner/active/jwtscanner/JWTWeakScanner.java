@@ -4,13 +4,13 @@ import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
 import burp.IScanIssue;
-import burp.core.scanner.active.BaseScanner;
+import burp.core.scanner.active.BaseActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class JWTWeakScanner extends BaseScanner implements ActionListener {
+public class JWTWeakScanner extends BaseActiveScanner implements ActionListener {
     private IBurpExtenderCallbacks callbacks;
     private IExtensionHelpers helpers;
     private BurpAnalyzedRequest analyzedRequest;

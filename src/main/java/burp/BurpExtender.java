@@ -111,7 +111,12 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
      */
     @Override
     public List<IScanIssue> doPassiveScan(IHttpRequestResponse baseRequestResponse) {
-        return null;
+        List<IScanIssue> IssueList = new ArrayList<IScanIssue>();
+
+        /*
+        * spring/svn/git/swagger
+        * */
+        return IssueList;
     }
 
     /**

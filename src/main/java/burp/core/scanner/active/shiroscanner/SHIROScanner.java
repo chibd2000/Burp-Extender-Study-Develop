@@ -4,13 +4,13 @@ import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
 import burp.IScanIssue;
-import burp.core.scanner.active.BaseScanner;
+import burp.core.scanner.active.BaseActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SHIROScanner extends BaseScanner implements ActionListener {
+public class SHIROScanner extends BaseActiveScanner implements ActionListener {
 
     public IBurpExtenderCallbacks callbacks;
     public IExtensionHelpers helpers;

@@ -183,8 +183,8 @@ public class Tags extends AbstractTableModel implements ITab, IMessageEditorCont
     /**
      * 更新任务状态至任务栏面板，这里主要就是为了更新endTime
      */
-    public int update(int id, String scannerName,  String url, String issue,
-                    String statusCode, IHttpRequestResponse requestResponse) {
+    public int update(int id, String scannerName,  String url, String statusCode,
+                      String issue, IHttpRequestResponse requestResponse) {
         Tags.TablesData dataEntry = Tags.this.Udatas.get(id);
         String startTime = dataEntry.startTime;
 

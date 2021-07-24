@@ -1,7 +1,7 @@
 package burp.core.scanner.active.bugscanner;
 
 import burp.*;
-import burp.core.scanner.active.BaseScanner;
+import burp.core.scanner.active.BaseActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 import burp.utils.HttpClientWrapper;
 import com.alibaba.fastjson.JSON;
@@ -18,7 +18,7 @@ import java.util.Map;
 /*
 * 控制类
 * */
-public class AWVScanner extends BaseScanner implements ActionListener, Runnable {
+public class AWVScanner extends BaseActiveScanner implements ActionListener, Runnable {
 
     public IBurpExtenderCallbacks callbacks;
     public IExtensionHelpers helpers;
@@ -125,9 +125,9 @@ public class AWVScanner extends BaseScanner implements ActionListener, Runnable 
         int addId;
         boolean a = this.addTask();
         if (a){
-            addId = BurpExtender.tags.add(this.scannerName, this.awvsTask.getTargetUrl(), "200", "waiting for result", null);
+            addId = BurpExtender.tags.add(this.scannerName, this.awvsTask.getTargetUrl(), "200", "[-] waiting for results", null);
         }else{
-            BurpExtender.tags.add(this.scannerName, this.awvsTask.getTargetUrl(), "500", "add task fail", null);
+            BurpExtender.tags.add(this.scannerName, this.awvsTask.getTargetUrl(), "500", "[-] add task fail", null);
             return;
         }
         try {
@@ -146,9 +146,9 @@ public class AWVScanner extends BaseScanner implements ActionListener, Runnable 
 
         boolean c = this.startTask();
         if (c){
-            BurpExtender.tags.update(addId, this.scannerName, this.awvsTask.getTargetUrl(), "200", "start task success",null);
+            BurpExtender.tags.update(addId, this.scannerName, this.awvsTask.getTargetUrl(), "200", "[+] start task success",null);
         }else{
-            BurpExtender.tags.update(addId, this.scannerName, this.awvsTask.getTargetUrl(), "500", "start task fail",null);
+            BurpExtender.tags.update(addId, this.scannerName, this.awvsTask.getTargetUrl(), "500", "[-] start task fail",null);
         }
     }
 }
