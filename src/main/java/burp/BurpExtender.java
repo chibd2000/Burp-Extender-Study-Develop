@@ -44,8 +44,8 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
         // 下面的为成员属性
         this.helpers = callbacks.getHelpers();
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
-        this.getBanner();
         this.domainNameRepeat = DomainNameRepeat.getDomainNameMap();
+        this.getBanner();
 
     }
 

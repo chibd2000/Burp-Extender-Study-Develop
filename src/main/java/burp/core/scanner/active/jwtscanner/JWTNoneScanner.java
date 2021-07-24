@@ -10,6 +10,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,8 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
     private IBurpExtenderCallbacks callbacks;
     private IExtensionHelpers helpers;
     private BurpAnalyzedRequest analyzedRequest;
-    public IHttpRequestResponse httpRequestResponse;
+    private IHttpRequestResponse httpRequestResponse;
+    private PrintWriter stdout;
 
     public JWTNoneScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
         super("jwtNoneScanner");
@@ -27,6 +29,7 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
         this.helpers = callbacks.getHelpers();
         this.analyzedRequest = new BurpAnalyzedRequest();
         this.httpRequestResponse = httpRequestResponse;
+        this.stdout = new PrintWriter(callbacks.getStdout(), true);
     }
 
     public List<String> getUnsignList(String jwtContent){
@@ -50,7 +53,7 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
         }
 
         for (String s : checkJwtList) {
-            System.out.println(s);
+            this.stdout.println(s);
         }
 
         return checkJwtList;
@@ -130,7 +133,5 @@ public class JWTNoneScanner extends BaseScanner implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("jwtScanner click me...");
-
-
     }
 }

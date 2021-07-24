@@ -29,21 +29,24 @@ public class AWVScanner extends BaseScanner implements ActionListener, Runnable 
     public AWVSTask awvsTask;
 
     public AWVScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
-        super("awvsScanner");
+        super("AWVXrayScanner");
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
         this.httpRequestResponse = httpRequestResponse;
         this.httpClientWrapper = new HttpClientWrapper();
         this.burpAnalyzedRequest = new BurpAnalyzedRequest();
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
+        // 刷新当前新的任务
         this.initTargetInfor();
     }
 
     public void initTargetInfor(){
         String targetUrl = this.burpAnalyzedRequest.getRequestDomain(this.httpRequestResponse);
         List<String> cookieList = this.burpAnalyzedRequest.getCookies(this.httpRequestResponse);
+        List<String> headerList = this.burpAnalyzedRequest.getCustomHeaders(this.httpRequestResponse);
         this.stdout.println(cookieList.toString());
-        this.awvsTask = new AWVSTask(this.callbacks, targetUrl, cookieList.toString());
+        this.stdout.println(headerList.toString());
+        this.awvsTask = new AWVSTask(this.callbacks, targetUrl, cookieList.toString(), headerList.toString());
     }
 
     public boolean addTask() {
@@ -58,7 +61,6 @@ public class AWVScanner extends BaseScanner implements ActionListener, Runnable 
         JSONArray targets1 = jsonObject.getJSONArray("targets");
         JSONObject o = (JSONObject) targets1.get(0);
         String targetId = (String) o.get("target_id");
-//        this.stdout.println(targetId);
         if (targetId != null){
             this.awvsTask.setTargetId(targetId);
             return true;
@@ -81,7 +83,7 @@ public class AWVScanner extends BaseScanner implements ActionListener, Runnable 
     public boolean startTask() {
         String startTaskJsonString = this.awvsTask.getStartTaskJsonString();
         this.stdout.println(this.awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/scans");
-        this.stdout.println(startTaskJsonString);
+//        this.stdout.println(startTaskJsonString);
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("X-Auth", awvsTask.AWVSConfig.getAwvsAPIKey());
         headers.put("Content-Type", "application/json");
@@ -119,7 +121,7 @@ public class AWVScanner extends BaseScanner implements ActionListener, Runnable 
      */
     @Override
     public void run() {
-        // 添加任务，返回的为targetId
+        // 添加当前新的任务，返回的为targetId
         int addId;
         boolean a = this.addTask();
         if (a){

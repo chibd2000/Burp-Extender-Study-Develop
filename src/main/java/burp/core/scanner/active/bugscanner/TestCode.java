@@ -94,4 +94,16 @@ public class TestCode {
         String s1 = httpClientWrapper.doPostJson("https://150.158.186.39:3443/api/v1/targets/add", json);
         System.out.println(s1);
     }
+    @Test
+    public void wwtwt(){
+        String[] commonHeaders = {"Cache-Control", "Connection", "Transfer-Encoding", "Upgrade",
+                "Via", "Warning", "Accept", "Accept-Charset", "Accept-Encoding",
+                "Except", "Host", "if-Match", "if-Modified-Since", "Range", "Referer",
+                "TE", "User-Agent", "Allow", "Content-Encoding", "Content-Language",
+                "Content-Length", "Content-Location", "Content-MD5", "Content-Range",
+                "Content-Type", "Expires", "Last-Modified"};
+        for (String commonHeader : commonHeaders) {
+            System.out.println(commonHeader);
+        }
+    }
 }

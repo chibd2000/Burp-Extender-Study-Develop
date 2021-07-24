@@ -15,13 +15,15 @@ public class AWVSTask {
     public AWVSConfig AWVSConfig;
 
     private String targetUrl;
-    private String targetCookie;
+    private String targetCookies;
+    private String targetHeaders;
     private String targetId;
 
-    public AWVSTask(IBurpExtenderCallbacks callbacks, String targetUrl, String targetCookie){
+    public AWVSTask(IBurpExtenderCallbacks callbacks, String targetUrl, String targetCookies, String targetHeaders){
         this.callbacks = callbacks;
         this.targetUrl = targetUrl;
-        this.targetCookie = targetCookie;
+        this.targetCookies = targetCookies;
+        this.targetHeaders = targetHeaders;
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
         this.AWVSConfig = new AWVSConfig(callbacks);
     }
@@ -30,17 +32,15 @@ public class AWVSTask {
         return targetUrl;
     }
 
-    public void setTargetUrl(String targetUrl) {
-        this.targetUrl = targetUrl;
-    }
+    public void setTargetUrl(String targetUrl) { this.targetUrl = targetUrl; }
 
-    public String getTargetCookie() {
-        return targetCookie;
-    }
+    public String getTargetCookies() { return targetCookies; }
 
-    public void setTargetCookie(String targetCookie) {
-        this.targetCookie = targetCookie;
-    }
+    public void setTargetCookies(String targetCookies) { this.targetCookies = targetCookies; }
+
+    public String getTargetHeaders() { return targetHeaders; }
+
+    public void setTargetHeaders(String targetHeaders) { this.targetHeaders = targetHeaders; }
 
     public void setTargetId(String targetId) {
         this.targetId = targetId;
@@ -79,7 +79,7 @@ public class AWVSTask {
                 "\"address\":\"" + this.AWVSConfig.getProxyServerAddr() + "\"," +
                 "\"port\":\""+ this.AWVSConfig.getProxyServerPort() + "\"}," +
                 "\"technologies\": []," +
-                "\"custom_headers\":[],\"custom_cookies\":" + this.targetCookie +"," +
+                "\"custom_headers\":"+ this.targetHeaders + ",\"custom_cookies\":" + this.targetCookies +"," +
                 "\"debug\":false," +
                 "\"restrict_scans_to_import_files\":false," +
                 "\"client_certificate_password\":\"\"," +
