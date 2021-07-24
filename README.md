@@ -19,12 +19,12 @@
 2、了解Burp插件开发流程  
 3、在测试中如果想扫描的话，还需要手动运行一次导入脚本，会比较麻烦，所以想写一个右键发送直接来进行扫描的插件  
   
-![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/AWVSXray.png) 
-  
 构想：  
 1、AWVS类：包含了动作事件  
 2、Config配置类：包含了AWVS所需要的配置  
 3、Task类，每个扫描目标的相关信息  
+
+![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/AWVSXray.png)  
 
 ## 基于Burp开发的shiro已知版本探测权限绕过
   
