@@ -1,7 +1,7 @@
 # Burp-Plugin-Develop
 
 
-## 基于Burp开发的被动扫描探测jwt签名算法None  
+## 基于Burp开发的探测jwt签名算法None  
   
 开发目的：  
   
@@ -19,7 +19,7 @@
 2、了解Burp插件开发流程  
 3、在测试中如果想扫描的话，还需要手动运行一次导入脚本，会比较麻烦，所以想写一个右键发送直接来进行扫描的插件  
   
-进度：完成  
+![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/master/pic/pic2.png) 
   
 构想：  
 1、AWVS类：包含了动作事件  
