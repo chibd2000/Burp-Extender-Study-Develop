@@ -1,6 +1,8 @@
 package burp.core.scanner.active.bugscanner;
 
 import burp.IBurpExtenderCallbacks;
+import burp.utils.TimeOutput;
+
 import java.io.*;
 import java.util.Properties;
 
@@ -67,9 +69,9 @@ public class AWVSConfig {
             this.scanSpeed = p.getProperty("scanSpeed");
             this.limitCrawlerScope = p.getProperty("limitCrawlerScope");
         } catch (FileNotFoundException e) {
-            this.stdout.println("配置文件未找到，请检查配置文件db.properties是否存在！");
+            this.stdout.println(TimeOutput.formatOutput("配置文件未找到，请检查配置文件db.properties是否存在！"));
         } catch (IOException e) {
-            this.stdout.println("配置文件相关IO错误，请检查！");
+            this.stdout.println(TimeOutput.formatOutput("配置文件相关IO错误，请检查！"));
         }finally {
             try {
                 assert in != null;

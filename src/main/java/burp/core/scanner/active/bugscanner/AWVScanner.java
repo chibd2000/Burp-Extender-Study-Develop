@@ -36,16 +36,14 @@ public class AWVScanner extends BaseActiveScanner implements ActionListener, Run
         this.httpClientWrapper = new HttpClientWrapper();
         this.burpAnalyzedRequest = new BurpAnalyzedRequest();
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
-        // 刷新当前新的任务
-        this.initTargetInfor();
     }
 
     public void initTargetInfor(){
         String targetUrl = this.burpAnalyzedRequest.getRequestDomain(this.httpRequestResponse);
         List<String> cookieList = this.burpAnalyzedRequest.getCookies(this.httpRequestResponse);
         List<String> headerList = this.burpAnalyzedRequest.getCustomHeaders(this.httpRequestResponse);
-        this.stdout.println(cookieList.toString());
-        this.stdout.println(headerList.toString());
+//        this.stdout.println(cookieList.toString());
+//        this.stdout.println(headerList.toString());
         this.awvsTask = new AWVSTask(this.callbacks, targetUrl, cookieList.toString(), headerList.toString());
     }
 
@@ -121,6 +119,9 @@ public class AWVScanner extends BaseActiveScanner implements ActionListener, Run
      */
     @Override
     public void run() {
+        // 刷新当前新的任务
+        this.initTargetInfor();
+
         // 添加当前新的任务，返回的为targetId
         int addId;
         boolean a = this.addTask();

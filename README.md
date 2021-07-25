@@ -10,6 +10,8 @@
 3、在测试中经常遇到Jwt的验证机制，自己每次都需要生成在替换会比较麻烦，所以想写一个自动化检测的插件 
   
 进度：完成
+
+![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/JWTNone.png)  
   
 ## 基于Burp开发的图形化添加AWVSXray扫描  
   

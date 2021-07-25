@@ -66,6 +66,7 @@ public class BurpAnalyzedRequest {
         return this.getResponseBody(requestResponse).length;
     }
 
+/*  放到了JWTVerfiyFinger类
     public String getJwt(IHttpRequestResponse requestResponse){
         String jwt = "";
         Pattern pattern = Pattern.compile(IJwtConstant.regexpJwtPattern);
@@ -90,6 +91,7 @@ public class BurpAnalyzedRequest {
         }
         return flag;
     }
+*/
 
     public String getRequestDomain(IHttpRequestResponse baseRequestResponse){
         String baseRequestProtocol = baseRequestResponse.getHttpService().getProtocol();
