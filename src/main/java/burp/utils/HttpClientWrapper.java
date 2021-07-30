@@ -390,7 +390,7 @@ public class HttpClientWrapper {
         return resultString;
     }
 
-    public void doPatchJson(String url, String json, Map<String, String> header) {
+    public int doPatchJson(String url, String json, Map<String, String> header) {
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClientBuilder.create().setSSLSocketFactory(this.sslsf).build();
         CloseableHttpResponse response = null;
@@ -408,6 +408,7 @@ public class HttpClientWrapper {
             // 创建请求内容
             StringEntity entity = new StringEntity(json, "utf-8");
             httpPatch.setEntity(entity);
+
             // 执行http请求
             response = httpClient.execute(httpPatch);
         } catch (Exception e) {
@@ -423,6 +424,7 @@ public class HttpClientWrapper {
                 e.printStackTrace();
             }
         }
+        return response.getStatusLine().getStatusCode();
     }
 
     @Test

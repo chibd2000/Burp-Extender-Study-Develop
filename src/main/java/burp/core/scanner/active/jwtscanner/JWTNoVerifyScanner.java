@@ -6,20 +6,22 @@ import burp.IHttpRequestResponse;
 import burp.IScanIssue;
 import burp.core.scanner.active.BaseActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
-import burp.utils.HttpClientWrapper;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 
-public class JWTEncodeWeakScanner extends BaseActiveScanner implements ActionListener, Runnable {
+/*
+* 无签名验证
+* */
+public class JWTNoVerifyScanner extends BaseActiveScanner implements ActionListener, Runnable {
 
-    public JWTEncodeWeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse) {
-        super("JwtEncodeWeakScanner");
+    public JWTNoVerifyScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse) {
+        super("JwtNoVerifyScanner");
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
-        this.httpRequestResponse = httpRequestResponse;
         this.burpAnalyzedRequest = new BurpAnalyzedRequest();
+        this.httpRequestResponse = httpRequestResponse;
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
     }
 

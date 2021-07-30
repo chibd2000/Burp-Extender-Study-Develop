@@ -106,4 +106,11 @@ public class TestCode {
             System.out.println(commonHeader);
         }
     }
+
+    @Test
+    public void test04(){
+        String a = "'sec-ch-ua: 'Chromium';v='92', ' Not A;Brand';v='99', 'Google Chrome';v='92'";
+        String s = "\"" + a.replaceAll("'", "\\\\\"") + "\"";
+        System.out.println(s);
+    }
 }

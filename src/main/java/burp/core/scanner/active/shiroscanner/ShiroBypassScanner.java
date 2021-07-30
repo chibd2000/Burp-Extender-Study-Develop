@@ -1,4 +1,4 @@
-package burp.core.scanner.active.jwtscanner;
+package burp.core.scanner.active.shiroscanner;
 
 import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
@@ -6,26 +6,20 @@ import burp.IHttpRequestResponse;
 import burp.IScanIssue;
 import burp.core.scanner.active.BaseActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
-import burp.utils.HttpClientWrapper;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 
-public class JWTEncodeWeakScanner extends BaseActiveScanner implements ActionListener, Runnable {
+public class ShiroBypassScanner extends BaseActiveScanner implements ActionListener, Runnable {
 
-    public JWTEncodeWeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse) {
-        super("JwtEncodeWeakScanner");
+    public ShiroBypassScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
+        super("ShiroBypassScanner");
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
-        this.httpRequestResponse = httpRequestResponse;
         this.burpAnalyzedRequest = new BurpAnalyzedRequest();
+        this.httpRequestResponse = httpRequestResponse;
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
-    }
-
-    @Override
-    public IScanIssue exportIssue(IHttpRequestResponse httpRequestResponse) {
-        return null;
     }
 
     /**
@@ -35,7 +29,13 @@ public class JWTEncodeWeakScanner extends BaseActiveScanner implements ActionLis
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println("shiroScanner click me...");
 
+    }
+
+    @Override
+    public IScanIssue exportIssue(IHttpRequestResponse httpRequestResponse) {
+        return null;
     }
 
     /**

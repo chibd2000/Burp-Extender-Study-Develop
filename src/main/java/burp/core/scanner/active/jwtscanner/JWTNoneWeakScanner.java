@@ -16,7 +16,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class JWTNoneScanner extends BaseActiveScanner implements ActionListener, Runnable {
+/*
+* None算法验证
+* */
+public class JWTNoneWeakScanner extends BaseActiveScanner implements ActionListener, Runnable {
 
     private IBurpExtenderCallbacks callbacks;
     private IExtensionHelpers helpers;
@@ -26,7 +29,7 @@ public class JWTNoneScanner extends BaseActiveScanner implements ActionListener,
 //    private DomainNameRepeat<String, Integer> domainNameRepeat;
 
 
-    public JWTNoneScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
+    public JWTNoneWeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
         super("JwtNoneScanner");
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
@@ -201,6 +204,7 @@ public class JWTNoneScanner extends BaseActiveScanner implements ActionListener,
                                 response
                         );
 //                        break;
+
                     }else{
                         // 不一样则是none不存在，未检测出来问题也要更新任务状态至任务栏面板
                         BurpExtender.tags.update(

@@ -19,14 +19,9 @@ import java.util.Map;
 * 控制类
 * */
 public class AWVScanner extends BaseActiveScanner implements ActionListener, Runnable {
-
-    public IBurpExtenderCallbacks callbacks;
-    public IExtensionHelpers helpers;
     public HttpClientWrapper httpClientWrapper;
-    public IHttpRequestResponse httpRequestResponse;
-    public BurpAnalyzedRequest burpAnalyzedRequest;
-    public PrintWriter stdout;
     public AWVSTask awvsTask;
+    public Map<String, String> headers = new HashMap<>();
 
     public AWVScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
         super("AWVXrayScanner");
@@ -45,16 +40,16 @@ public class AWVScanner extends BaseActiveScanner implements ActionListener, Run
 //        this.stdout.println(cookieList.toString());
 //        this.stdout.println(headerList.toString());
         this.awvsTask = new AWVSTask(this.callbacks, targetUrl, cookieList.toString(), headerList.toString());
+        this.headers = new HashMap<String, String>();
+        headers.put("X-Auth", awvsTask.AWVSConfig.getAwvsAPIKey());
+        headers.put("Content-Type", "application/json");
     }
 
     public boolean addTask() {
         String addTaskJsonString = this.awvsTask.getAddTaskJsonString();
         this.stdout.println(this.awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/targets/add");
 //        this.stdout.println(addTaskJsonString);
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("X-Auth", this.awvsTask.AWVSConfig.getAwvsAPIKey());
-        headers.put("Content-Type", "application/json");
-        String s = this.httpClientWrapper.doPostJson(this.awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/targets/add", addTaskJsonString, headers);
+        String s = this.httpClientWrapper.doPostJson(this.awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/targets/add", addTaskJsonString, this.headers);
         JSONObject jsonObject = JSON.parseObject(s);
         JSONArray targets1 = jsonObject.getJSONArray("targets");
         JSONObject o = (JSONObject) targets1.get(0);
@@ -67,25 +62,19 @@ public class AWVScanner extends BaseActiveScanner implements ActionListener, Run
         }
     }
 
-    public void configureTask() {
+    public int configureTask() {
         String configureTaskJsonString = this.awvsTask.getConfigureTaskJsonString();
         this.stdout.println(this.awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/targets/" + this.awvsTask.getTargetId() + "/configuration");
         this.stdout.println(configureTaskJsonString);
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("X-Auth", this.awvsTask.AWVSConfig.getAwvsAPIKey());
-        headers.put("Content-Type", "application/json");
-        this.httpClientWrapper.doPatchJson(this.awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/targets/"
-                +  this.awvsTask.getTargetId() + "/configuration", configureTaskJsonString, headers);
+        return this.httpClientWrapper.doPatchJson(this.awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/targets/"
+                + this.awvsTask.getTargetId() + "/configuration", configureTaskJsonString, this.headers);
     }
 
     public boolean startTask() {
         String startTaskJsonString = this.awvsTask.getStartTaskJsonString();
         this.stdout.println(this.awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/scans");
 //        this.stdout.println(startTaskJsonString);
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("X-Auth", awvsTask.AWVSConfig.getAwvsAPIKey());
-        headers.put("Content-Type", "application/json");
-        String s = this.httpClientWrapper.doPostJson(awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/scans", startTaskJsonString, headers);
+        String s = this.httpClientWrapper.doPostJson(awvsTask.AWVSConfig.getAwvsServerAddr() + "/api/v1/scans", startTaskJsonString, this.headers);
         return s.contains("profile_id") && s.contains("target_id");
     }
 
@@ -131,13 +120,19 @@ public class AWVScanner extends BaseActiveScanner implements ActionListener, Run
             BurpExtender.tags.add(this.scannerName, this.awvsTask.getTargetUrl(), "500", "[-] add task fail", null);
             return;
         }
+
         try {
             Thread.sleep(2000);
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
 
-        this.configureTask();
+        int httpStatusCode = this.configureTask();
+
+        if (httpStatusCode == 500){
+            BurpExtender.tags.update(addId, this.scannerName, this.awvsTask.getTargetUrl(), "500", "[-] configure task fail", null);
+            return;
+        }
 
         try {
             Thread.sleep(2000);

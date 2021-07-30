@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /*
-* 解析BURP的request和response数据
+* 解析BURP的request和response数据工具类
 * */
 public class BurpAnalyzedRequest {
 
@@ -66,7 +66,7 @@ public class BurpAnalyzedRequest {
         return this.getResponseBody(requestResponse).length;
     }
 
-/*  放到了JWTVerfiyFinger类
+/*  放到了JWTUtils类
     public String getJwt(IHttpRequestResponse requestResponse){
         String jwt = "";
         Pattern pattern = Pattern.compile(IJwtConstant.regexpJwtPattern);
@@ -160,6 +160,7 @@ public class BurpAnalyzedRequest {
         return cookiesList;
     }
 
+    /*for awvs*/
     public List<String> getCustomHeaders(IHttpRequestResponse requestResponse){
         List<String> headersList = new ArrayList<>();
         IRequestInfo RequestInfo = this.helpers.analyzeRequest(requestResponse);
@@ -183,7 +184,7 @@ public class BurpAnalyzedRequest {
             }
             if (!flag){
                 // 如果到了这里，说明上面的通用字段没有匹配到，说明这个字段我们需要用到，也就是有可能是鉴权字段
-                headersList.add("\""+ currentHeader + "\"");
+                headersList.add("\""+ currentHeader.replaceAll("\"", "\\\\\"") + "\"");
             }
         }
         return headersList;

@@ -2,13 +2,17 @@ package burp;
 
 
 import burp.core.scanner.active.bugscanner.AWVScanner;
-import burp.core.scanner.active.jwtscanner.JWTNoneScanner;
-import burp.core.scanner.active.shiroscanner.SHIROScanner;
+import burp.core.scanner.active.jwtscanner.JWTNoVerifyScanner;
+import burp.core.scanner.active.jwtscanner.JWTNoneWeakScanner;
+import burp.core.scanner.active.shiroscanner.ShiroBypassScanner;
+import burp.core.service.QueueDispatcherService;
 import burp.ui.AwvsMultiTaskDlg;
 import burp.ui.Tags;
 import burp.utils.DomainNameRepeat;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +23,7 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
     public static String VERSION = "1.0";
     public static IBurpExtenderCallbacks callbacks;
     public static Tags tags;
+    public static QueueDispatcherService queueDispatcherService;
 
     public IExtensionHelpers helpers;
     public PrintWriter stdout;
@@ -36,17 +41,17 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
     @Override
     public void registerExtenderCallbacks(IBurpExtenderCallbacks callbacks) {
         // 这些为了在其他地方进行调用，所以设置成为了静态属性
-        this.callbacks = callbacks;
-        this.callbacks.setExtensionName("MyScanner");
-        this.callbacks.registerContextMenuFactory(this);
-        this.tags = new Tags(callbacks, NAME);
+        BurpExtender.callbacks = callbacks;
+        BurpExtender.callbacks.setExtensionName("MyScanner");
+        BurpExtender.callbacks.registerContextMenuFactory(this);
+        BurpExtender.tags = new Tags(callbacks, NAME);
 
         // 下面的为成员属性
         this.helpers = callbacks.getHelpers();
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
         this.domainNameRepeat = DomainNameRepeat.getDomainNameMap();
         this.getBanner();
-
+        this.initDispatcher();
     }
 
     public void getBanner(){
@@ -55,6 +60,11 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
         this.stdout.println("- For bugs please on the official github: https://github.com/chibd2000/Burp-Extender-Study-Develop");
         this.stdout.println("- author: chibd2000");
         this.stdout.println("- github: https://github.com/chibd2000");
+    }
+
+    public void initDispatcher(){
+        BurpExtender.queueDispatcherService = new QueueDispatcherService(BurpExtender.callbacks);
+        BurpExtender.queueDispatcherService.init();
     }
 
     /**
@@ -78,22 +88,38 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
 
         JMenu bugScanner = new JMenu("Send To MyScanner");
 
-        JMenuItem awvsScanner = new JMenuItem("awvsXray");
-        awvsScanner.addActionListener(new AWVScanner(this.callbacks, invocation.getSelectedMessages()[0]));
-        bugScanner.add(awvsScanner);
+        JMenuItem awvsScanner = new JMenuItem("awvsXrayScan");
+        awvsScanner.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BurpExtender.queueDispatcherService.addData(new AWVScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
+            }
+        });
 
-        JMenuItem jwtScanner = new JMenuItem("jwtNone");
-        jwtScanner.addActionListener(new JWTNoneScanner(this.callbacks, invocation.getSelectedMessages()[0]));
-        bugScanner.add(jwtScanner);
+        JMenuItem jwtScanner = new JMenuItem("JWTScan");
+        jwtScanner.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BurpExtender.queueDispatcherService.addData(new JWTNoneWeakScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
+                BurpExtender.queueDispatcherService.addData(new JWTNoVerifyScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
+            }
+        });
 
-        JMenuItem shiroScanner = new JMenuItem("shiroPermission");
-        shiroScanner.addActionListener(new SHIROScanner(this.callbacks, invocation.getSelectedMessages()[0]));
-        bugScanner.add(shiroScanner);
+        JMenuItem shiroScanner = new JMenuItem("shiroPermissionScan");
+        shiroScanner.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BurpExtender.queueDispatcherService.addData(new ShiroBypassScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
+            }
+        });
 
         JMenuItem awvsMultiTaskDlg = new JMenuItem("awvsMultiDlg");
         awvsMultiTaskDlg.addActionListener(new AwvsMultiTaskDlg());
-        bugScanner.add(awvsMultiTaskDlg);
 
+        bugScanner.add(awvsScanner);
+        bugScanner.add(jwtScanner);
+        bugScanner.add(shiroScanner);
+        bugScanner.add(awvsMultiTaskDlg);
         jMenuItemList.add(bugScanner);
         return jMenuItemList;
     }
@@ -111,12 +137,17 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
      */
     @Override
     public List<IScanIssue> doPassiveScan(IHttpRequestResponse baseRequestResponse) {
-        List<IScanIssue> IssueList = new ArrayList<IScanIssue>();
+        List<IScanIssue> issueList = new ArrayList<IScanIssue>();
 
         /*
         * spring/svn/git/swagger
+        * 1、反射获取实现IPassiveScanner的所有实现类放入到任务队列中即可，剩下的都交给任务分发模块来进行解决
         * */
-        return IssueList;
+
+
+
+        issueList.add(new BurpScanIssue(null,null,null,null,null,null));
+        return issueList;
     }
 
     /**
