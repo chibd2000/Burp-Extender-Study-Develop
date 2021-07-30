@@ -11,13 +11,9 @@
 
 ![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/JWTNone.png)
 
-
-
 使用说明：
 
 1、在检测的时候需要在Repeater进行发包一次，因为这里实现的逻辑是通过返回包的大小与原来返回包的大小进行比较，所以需要先得到正常的数据包的返回大小才可以  
-
-  
 
 更新内容：  
 
@@ -35,13 +31,9 @@
 
 ![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/AWVSXray.png)   
 
-
-
 更新内容：
 
 1、如果header头字段中的内容带上了双引号，则添加扫描的时候失败，这里通过转义header内容中的双引号来进行解决（2021.7.30-已修改） 
-
-
 
 使用说明：
 
