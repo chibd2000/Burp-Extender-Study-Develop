@@ -1,7 +1,7 @@
 # Burp-Plugin-Develop
 
 
-## 基于Burp开发的主动探测jwt签名算法None（2021.7.25）  
+## 基于Burp开发的主动探测jwt签名算法None和签名的有效性
 
 开发目的：  
 
@@ -21,7 +21,7 @@
 
 2、如果jwt鉴权数据存在于URL中的时候，此时在构建请求包发送的时候会失败（2021.7.31-已修改）
 
-## 基于Burp开发的图形化主动添加AWVSXray扫描（2021.7.25）  
+## 基于Burp开发的图形化主动添加AWVSXray扫描
 
 开发目的：  
 
@@ -39,7 +39,7 @@
 
 1、将工程文件中的db.properties中的相关xray和awvs进行配置放到burp目录即可，可以看extender中是否有提示读取到相关配置信息即可
 
-## 基于Burp开发的主动shiro已知版本探测权限绕过（2021.7.30）
+## 基于Burp开发的主动shiro已知版本探测权限绕过
 
 开发目的：  
 
@@ -47,15 +47,40 @@
 2、了解Burp插件开发流程  
 3、在测试中经常遇到shiro，自己每次都需要生成在替换会比较麻烦，所以想写一个自动化检测的插件  
 
-CVE-2016-6802（shiro<1.5.0）  ：`http://localhost/admin/info/`  
+CVE-2016-6802（shiro<1.5.0）  ：`http://localhost/admin/`  
 
-CVE-2020-1957（shiro<1.5.2）  ：`http://localhost/admin/;/info`  
+![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/CVE_2016_6802.png)   
 
-CVE-2020-11989（shiro<1.5.3）：`http://localhost/test;/admin/info`   （11989的权限绕过需要基于ContextPath的存在）
+CVE-2020-1957（shiro<1.5.2）  ：`http://localhost/;/admin/`  
 
-CVE-2016-13933（shiro<1.6）   ：`http://localhost/admin/%3binfo`   
+![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/CVE-2020-1957.png)   
 
-CVE-2020-17510（shiro<1.7.0）：  
+CVE-2020-11989（shiro<1.5.3）：`http://localhost/test;/admin`   （11989的权限绕过需要基于ContextPath的存在）
 
-CVE-2020-17523（shiro<1.7.0）：
+![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/CVE-2020-11989.png)   
 
+CVE-2016-13933（shiro<1.6）   ：`http://localhost/hello/%3b11111`   
+
+![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/CVE-2016-13933.png)   
+
+CVE-2020-17510（shiro<1.7.0）：没写  
+
+CVE-2020-17523（shiro<1.7.0）：没写
+
+## 基于Burp开发的被动敏感路径探测
+
+1、学习java  
+2、了解Burp插件开发流程  
+3、在测试中可能一些路径会遗漏，所以想写一个被动扫描的检测插件
+
+spring：敏感路径泄露
+
+svn：源码泄露
+
+git：源码泄露 
+
+interface-doc：接口API泄露
+
+
+
+还没写，这个星期六星期天可能会补上

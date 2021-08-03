@@ -7,6 +7,8 @@ import burp.IScanIssue;
 import burp.utils.BurpAnalyzedRequest;
 
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public abstract class BaseActiveScanner {
     public IBurpExtenderCallbacks callbacks;
@@ -15,8 +17,15 @@ public abstract class BaseActiveScanner {
     public IHttpRequestResponse httpRequestResponse;
     public PrintWriter stdout;
     public String scannerName;
+
     public BaseActiveScanner(String scannerName){
         this.scannerName = scannerName;
     }
+
+    public String getScannerName() {
+        return this.scannerName;
+    }
+
     public abstract IScanIssue exportIssue(IHttpRequestResponse httpRequestResponse);
+
 }

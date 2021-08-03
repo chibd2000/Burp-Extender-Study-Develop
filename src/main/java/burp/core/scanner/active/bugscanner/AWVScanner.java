@@ -2,6 +2,7 @@ package burp.core.scanner.active.bugscanner;
 
 import burp.*;
 import burp.core.scanner.active.BaseActiveScanner;
+import burp.core.scanner.active.IBaseScanner;
 import burp.utils.BurpAnalyzedRequest;
 import burp.utils.HttpClientWrapper;
 import com.alibaba.fastjson.JSON;
@@ -18,7 +19,7 @@ import java.util.Map;
 /*
 * 控制类
 * */
-public class AWVScanner extends BaseActiveScanner implements ActionListener, Runnable {
+public class AWVScanner extends BaseActiveScanner implements ActionListener, Runnable, IBaseScanner {
     public HttpClientWrapper httpClientWrapper;
     public AWVSTask awvsTask;
     public Map<String, String> headers = new HashMap<>();
@@ -146,5 +147,15 @@ public class AWVScanner extends BaseActiveScanner implements ActionListener, Run
         }else{
             BurpExtender.tags.update(addId, this.scannerName, this.awvsTask.getTargetUrl(), "500", "[-] start task fail",null);
         }
+    }
+
+    @Override
+    public Object getPayload() {
+        return null;
+    }
+
+    @Override
+    public List<IHttpRequestResponse> sendPayload() {
+        return null;
     }
 }

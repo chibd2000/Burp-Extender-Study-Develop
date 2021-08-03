@@ -4,17 +4,15 @@ import burp.IHttpRequestResponse;
 import burp.IScanIssue;
 import burp.core.scanner.passive.BasePassiveScanner;
 import burp.core.scanner.passive.IPassiveScanner;
+import burp.utils.BurpAnalyzedRequest;
 
 public class GitLeakScanner extends BasePassiveScanner implements IPassiveScanner {
-
-
-    public GitLeakScanner(String scannerName) {
-        super(scannerName);
-    }
-
-    @Override
-    public String getScannerName() {
-        return null;
+    public IHttpRequestResponse httpRequestResponse;
+    public BurpAnalyzedRequest burpAnalyzedRequest;
+    public GitLeakScanner(IHttpRequestResponse httpRequestResponse) {
+        super("GitLeakScanner");
+        this.httpRequestResponse = httpRequestResponse;
+        this.burpAnalyzedRequest = new BurpAnalyzedRequest();
     }
 
     @Override
@@ -24,6 +22,11 @@ public class GitLeakScanner extends BasePassiveScanner implements IPassiveScanne
 
     @Override
     public void scan() {
+        String requestURI = this.burpAnalyzedRequest.getRequestURI(this.httpRequestResponse);
+
+    }
+
+    public void getPayload(){
 
     }
 }

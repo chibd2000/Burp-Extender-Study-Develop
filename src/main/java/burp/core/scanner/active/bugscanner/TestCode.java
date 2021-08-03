@@ -1,7 +1,5 @@
 package burp.core.scanner.active.bugscanner;
 
-import burp.BurpExtender;
-import burp.BurpScanIssue;
 import burp.utils.HttpClientWrapper;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

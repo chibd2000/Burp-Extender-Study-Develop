@@ -11,6 +11,19 @@ public class MYJwt {
     public String base64header;
     public String headerJson;
     public String base64Pyload;
+
+    public String getBase64header() {
+        return base64header;
+    }
+
+    public String getBase64Pyload() {
+        return base64Pyload;
+    }
+
+    public String getBase64Sign() {
+        return base64Sign;
+    }
+
     public String payloadJson;
     public String base64Sign;
     public String sign;

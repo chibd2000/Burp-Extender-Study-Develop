@@ -8,5 +8,5 @@ public abstract class BasePassiveScanner {
     public BasePassiveScanner(String scannerName){
         this.scannerName = scannerName;
     }
-    public abstract String getScannerName();
+    public String getScannerName() { return this.scannerName;}
 }

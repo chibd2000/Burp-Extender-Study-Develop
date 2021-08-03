@@ -7,13 +7,8 @@ import burp.core.scanner.passive.IPassiveScanner;
 
 public class SpringLeakScanner extends BasePassiveScanner implements IPassiveScanner {
 
-    public SpringLeakScanner(String scannerName) {
-        super(scannerName);
-    }
-
-    @Override
-    public String getScannerName() {
-        return null;
+    public SpringLeakScanner() {
+        super("SpringLeakScanner");
     }
 
     @Override

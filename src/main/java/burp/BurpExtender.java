@@ -8,6 +8,7 @@ import burp.core.scanner.active.shiroscanner.ShiroBypassScanner;
 import burp.core.service.QueueDispatcherService;
 import burp.ui.AwvsMultiTaskDlg;
 import burp.ui.Tags;
+import burp.utils.BurpAnalyzedRequest;
 import burp.utils.DomainNameRepeat;
 
 import javax.swing.*;
@@ -27,8 +28,6 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
 
     public IExtensionHelpers helpers;
     public PrintWriter stdout;
-    public DomainNameRepeat<String, Integer> domainNameRepeat;
-
     /**
      * This method is invoked when the extension is loaded. It registers an
      * instance of the
@@ -49,7 +48,6 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
         // 下面的为成员属性
         this.helpers = callbacks.getHelpers();
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
-        this.domainNameRepeat = DomainNameRepeat.getDomainNameMap();
         this.getBanner();
         this.initDispatcher();
     }
@@ -86,7 +84,7 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
     public List<JMenuItem> createMenuItems(IContextMenuInvocation invocation) {
         ArrayList<JMenuItem> jMenuItemList = new ArrayList<>();
 
-        JMenu bugScanner = new JMenu("Send To MyScanner");
+        JMenu scannerJMenu = new JMenu("Send To MyScanner");
 
         JMenuItem awvsScanner = new JMenuItem("awvsXrayScan");
         awvsScanner.addActionListener(new ActionListener() {
@@ -116,11 +114,11 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
         JMenuItem awvsMultiTaskDlg = new JMenuItem("awvsMultiDlg");
         awvsMultiTaskDlg.addActionListener(new AwvsMultiTaskDlg());
 
-        bugScanner.add(awvsScanner);
-        bugScanner.add(jwtScanner);
-        bugScanner.add(shiroScanner);
-        bugScanner.add(awvsMultiTaskDlg);
-        jMenuItemList.add(bugScanner);
+        scannerJMenu.add(awvsScanner);
+        scannerJMenu.add(jwtScanner);
+        scannerJMenu.add(shiroScanner);
+        scannerJMenu.add(awvsMultiTaskDlg);
+        jMenuItemList.add(scannerJMenu);
         return jMenuItemList;
     }
 
@@ -137,6 +135,20 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
      */
     @Override
     public List<IScanIssue> doPassiveScan(IHttpRequestResponse baseRequestResponse) {
+        BurpAnalyzedRequest burpAnalyzedRequest = new BurpAnalyzedRequest();
+        String requestDomain = burpAnalyzedRequest.getRequestDomain(baseRequestResponse);
+        // 过滤没必要进行扫描的域名
+        if (requestDomain.toLowerCase().contains("firefox")
+                || requestDomain.toLowerCase().contains("mozilla")
+                || requestDomain.toLowerCase().contains("google.com")
+                || requestDomain.toLowerCase().contains("wappalyzer.com")
+                || requestDomain.toLowerCase().contains("fofa.so")
+                || requestDomain.toLowerCase().contains("shodan.io")
+                || requestDomain.toLowerCase().contains("github.com")
+        ) {
+            return null;
+        }
+
         List<IScanIssue> issueList = new ArrayList<IScanIssue>();
 
         /*

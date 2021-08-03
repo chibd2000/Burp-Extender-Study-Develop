@@ -27,6 +27,11 @@
     <option name="WARN_ABOUT_CRLF" value="false" />
     <option name="WARN_ABOUT_DETACHED_HEAD" value="false" />
   </component>
+  <component name="JsbtTreeLayoutManager">
+    <layout place="tools.popupGrunt">
+      <scroll-view-position x="0" y="0" />
+    </layout>
+  </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -52,14 +57,15 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../javaidea/bypass-shiro-permission" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="burp.core.scanner.active.shiroscanner" />
       <recent name="burp.core.scanner.passive" />
       <recent name="burp" />
       <recent name="burp.core.jwtscanner" />
@@ -70,25 +76,9 @@
       <recent name="D:\ALL\javaidea\BurpAwvsXray\src\main\java\com\zpchcbd\utils" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.TestCode.test04">
-    <configuration name="Output.test10" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="BurpPlugin" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="burp.utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="burp.utils" />
-      <option name="MAIN_CLASS_NAME" value="burp.utils.Output" />
-      <option name="METHOD_NAME" value="test10" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.TestShiro.test01">
     <configuration name="TestCode.test04" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="BurpPlugin" />
+      <module name="Burp-Extender-Study-Develop" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="burp.core.scanner.active.bugscanner.*" />
@@ -103,24 +93,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TestCode.wwtwt" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="BurpPlugin" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="burp.core.scanner.active.bugscanner.AWVScanner" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="burp.core.scanner.active.bugscanner" />
-      <option name="MAIN_CLASS_NAME" value="burp.core.scanner.active.bugscanner.TestCode" />
-      <option name="METHOD_NAME" value="wwtwt" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TestJwt.test01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="BurpPlugin" />
+    <configuration name="TestJwt.test03" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Burp-Extender-Study-Develop" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="burp.core.scanner.active.jwtscanner.*" />
@@ -129,23 +103,55 @@
       </extension>
       <option name="PACKAGE_NAME" value="burp.core.scanner.active.jwtscanner" />
       <option name="MAIN_CLASS_NAME" value="burp.core.scanner.active.jwtscanner.TestJwt" />
+      <option name="METHOD_NAME" value="test03" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestShiro.test01" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Burp-Extender-Study-Develop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="burp.core.scanner.active.shiroscanner.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="burp.core.scanner.active.shiroscanner" />
+      <option name="MAIN_CLASS_NAME" value="burp.core.scanner.active.shiroscanner.TestShiro" />
       <option name="METHOD_NAME" value="test01" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TestJwt.test02" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="BurpPlugin" />
+    <configuration name="TestShiro.test02" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Burp-Extender-Study-Develop" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="burp.core.scanner.active.jwtscanner.*" />
+          <option name="PATTERN" value="burp.core.scanner.active.shiroscanner.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="burp.core.scanner.active.jwtscanner" />
-      <option name="MAIN_CLASS_NAME" value="burp.core.scanner.active.jwtscanner.TestJwt" />
+      <option name="PACKAGE_NAME" value="burp.core.scanner.active.shiroscanner" />
+      <option name="MAIN_CLASS_NAME" value="burp.core.scanner.active.shiroscanner.TestShiro" />
       <option name="METHOD_NAME" value="test02" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestShiro.test03" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Burp-Extender-Study-Develop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="burp.core.scanner.active.shiroscanner.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="burp.core.scanner.active.shiroscanner" />
+      <option name="MAIN_CLASS_NAME" value="burp.core.scanner.active.shiroscanner.TestShiro" />
+      <option name="METHOD_NAME" value="test03" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -153,11 +159,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.TestShiro.test01" />
+        <item itemvalue="JUnit.TestShiro.test02" />
+        <item itemvalue="JUnit.TestShiro.test03" />
+        <item itemvalue="JUnit.TestJwt.test03" />
         <item itemvalue="JUnit.TestCode.test04" />
-        <item itemvalue="JUnit.TestJwt.test02" />
-        <item itemvalue="JUnit.TestJwt.test01" />
-        <item itemvalue="JUnit.Output.test10" />
-        <item itemvalue="JUnit.TestCode.wwtwt" />
       </list>
     </recent_temporary>
   </component>
@@ -188,7 +194,9 @@
       <workItem from="1627557367802" duration="136000" />
       <workItem from="1627575701861" duration="8055000" />
       <workItem from="1627665822223" duration="57000" />
-      <workItem from="1627665956112" duration="2404000" />
+      <workItem from="1627665956112" duration="3646000" />
+      <workItem from="1627889778874" duration="17919000" />
+      <workItem from="1627988272754" duration="12419000" />
     </task>
     <servers />
   </component>
@@ -205,10 +213,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="178" key="#Notifications/0.0.1920.1040@0.0.1920.1040" timestamp="1627666310119" />
-    <state x="552" y="178" key="#Project_Structure" timestamp="1627065732712">
+    <state x="552" y="178" key="#Project_Structure" timestamp="1627889885065">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="178" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1627065732712" />
+    <state x="552" y="178" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1627889885065" />
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1627140450123">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -217,66 +225,78 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="691" y="322" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1627055735250" />
-    <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser" timestamp="1627668218705">
+    <state x="588" y="207" key="#com.intellij.ide.fileTemplates.ui.ConfigureTemplatesDialog" timestamp="1627668618798">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1627668218705" />
+    <state x="588" y="207" key="#com.intellij.ide.fileTemplates.ui.ConfigureTemplatesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1627668618798" />
+    <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser" timestamp="1627924588739">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1627924588739" />
     <state x="690" y="302" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1626796272806">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="302" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1626796272806" />
+    <state x="739" y="404" width="441" height="240" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1627907521166">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="739" y="404" width="441" height="240" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1920.1040@0.0.1920.1040" timestamp="1627907521166" />
     <state x="308" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1627393521153">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="308" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1627393521153" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1627666494832">
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1628001289837">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1627666494832" />
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1627627933454">
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1628001289837" />
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1628002667653">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1627627933454" />
-    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1627627933453">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1628002667653" />
+    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1628002667651">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1627627933453" />
-    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1627627933452">
+    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1628002667651" />
+    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1628002667651">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1627627933452" />
-    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1627627933454">
+    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1628002667651" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1628002667651">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1627627933454" />
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1626977625997">
+    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1628002667651" />
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1627925602926">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1626977625997" />
-    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1626977625997">
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1627925602926" />
+    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1627925602926">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1626977625997" />
-    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1626977625997">
+    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1627925602926" />
+    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1627925602926">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1626977625997" />
-    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1626977625997">
+    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1627925602926" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1627925602926">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1626977625997" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1627925602926" />
     <state x="440" y="94" key="SettingsEditor" timestamp="1627668265874">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1627668265874" />
-    <state x="690" y="284" key="extract.method.dialog" timestamp="1627193002209">
+    <state x="690" y="284" key="extract.method.dialog" timestamp="1627902928037">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="690" y="284" key="extract.method.dialog/0.0.1920.1040@0.0.1920.1040" timestamp="1627193002209" />
-    <state x="636" y="253" width="835" height="534" key="find.popup" timestamp="1627667006753">
+    <state x="690" y="284" key="extract.method.dialog/0.0.1920.1040@0.0.1920.1040" timestamp="1627902928037" />
+    <state x="636" y="253" width="835" height="534" key="find.popup" timestamp="1628001206421">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="636" y="253" width="835" height="534" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1627667006753" />
+    <state x="636" y="253" width="835" height="534" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1628001206421" />
+    <state x="826" y="386" width="250" height="278" key="jetbrains.javascript.buildTools.run-task-popup" timestamp="1627911563594">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="826" y="386" width="250" height="278" key="jetbrains.javascript.buildTools.run-task-popup/0.0.1920.1040@0.0.1920.1040" timestamp="1627911563594" />
     <state x="661" y="147" key="refactoring.ChangeSignatureDialog" timestamp="1627132596579">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -285,9 +305,9 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1627199784911" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1627578368579">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1627994122194">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1627578368579" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1627994122194" />
   </component>
 </project>

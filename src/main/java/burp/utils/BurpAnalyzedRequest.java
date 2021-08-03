@@ -104,7 +104,7 @@ public class BurpAnalyzedRequest {
         }
     }
 
-    public String getRequestPath(IHttpRequestResponse baseRequestResponse){
+    public String getRequestURI(IHttpRequestResponse baseRequestResponse){
         return this.helpers.analyzeRequest(baseRequestResponse).getUrl().getPath();
     }
 

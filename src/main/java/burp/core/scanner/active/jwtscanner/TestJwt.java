@@ -54,4 +54,11 @@ public class TestJwt {
             System.out.println(s);
         }
     }
+
+    @Test
+    public void test03(){
+        MYJwt myJwt = new MYJwt("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c");
+        String b64JwtHeader = myJwt.getBase64header() + "." +myJwt.getBase64Pyload() + ".";
+        System.out.println(b64JwtHeader);
+    }
 }
