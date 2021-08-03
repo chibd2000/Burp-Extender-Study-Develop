@@ -2,7 +2,7 @@ package burp.core.scanner.active.shiroscanner;
 
 import burp.*;
 import burp.core.scanner.active.BaseActiveScanner;
-import burp.core.scanner.active.IBaseScanner;
+import burp.core.scanner.active.IActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 
 import java.awt.event.ActionEvent;
@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShiroBypassScanner extends BaseActiveScanner implements ActionListener, Runnable, IBaseScanner {
+public class ShiroBypassScanner extends BaseActiveScanner implements ActionListener, Runnable, IActiveScanner {
 
     public ShiroBypassScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
         super("ShiroBypassScanner");
@@ -36,13 +36,13 @@ public class ShiroBypassScanner extends BaseActiveScanner implements ActionListe
         List<String> payloadList = new ArrayList<>();
         String requestURI = this.burpAnalyzedRequest.getRequestURI(this.httpRequestResponse);
         // CVE_2016_6802
-        String CVE_2016_6802 = new CVE_2016_6802(requestURI).getRequestURI();
+        String CVE_2016_6802 = new CVE_2016_6802(requestURI).getExp();
         // CVE_2020_1957
-        String CVE_2020_1957 = new CVE_2020_1957(requestURI).getRequestURI();
+        String CVE_2020_1957 = new CVE_2020_1957(requestURI).getExp();
         // CVE-2020-11989 基于ContextPath，这里的Context就为第一层目录
-        String CVE_2020_11989 = new CVE_2020_11989(requestURI).getRequestURI();
+        String CVE_2020_11989 = new CVE_2020_11989(requestURI).getExp();
         // CVE-2020-13933
-        String CVE_2020_13933 = new CVE_2020_13933(requestURI).getRequestURI();
+        String CVE_2020_13933 = new CVE_2020_13933(requestURI).getExp();
         // PUT
         payloadList.add(CVE_2016_6802);
         payloadList.add(CVE_2020_1957);
@@ -72,11 +72,6 @@ public class ShiroBypassScanner extends BaseActiveScanner implements ActionListe
         }
 
         return responseList;
-    }
-
-    @Override
-    public IScanIssue exportIssue(IHttpRequestResponse httpRequestResponse) {
-        return null;
     }
 
     /**

@@ -5,18 +5,25 @@ import burp.IScanIssue;
 import burp.core.scanner.passive.BasePassiveScanner;
 import burp.core.scanner.passive.IPassiveScanner;
 
+import java.util.List;
+
 public class SVNLeakScanner extends BasePassiveScanner implements IPassiveScanner {
     public SVNLeakScanner() {
         super("SvnLeakScanner");
     }
 
     @Override
-    public IScanIssue exportIssue(IHttpRequestResponse httpRequestResponse) {
+    public List<String> getPayload() {
         return null;
     }
 
     @Override
-    public void scan() {
+    public List<IHttpRequestResponse> sendPayload() {
+        return null;
+    }
 
+    @Override
+    public IScanIssue exportIssue(IHttpRequestResponse httpRequestResponse) {
+        return null;
     }
 }

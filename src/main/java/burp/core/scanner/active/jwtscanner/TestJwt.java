@@ -1,14 +1,8 @@
 package burp.core.scanner.active.jwtscanner;
 
 import com.alibaba.fastjson.JSONObject;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.impl.JWTParser;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.Header;
-import com.auth0.jwt.interfaces.Payload;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -41,7 +35,7 @@ public class TestJwt {
         String jwtContent = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
         List<String> checkJwtList = new ArrayList<>();
-        for (IJwtConstant.NoneFlag value : IJwtConstant.NoneFlag.values()) {
+        for (IJWTConstant.NoneFlag value : IJWTConstant.NoneFlag.values()) {
             MYJwt myJwt = new MYJwt(jwtContent);
             JSONObject jsonObject = JSONObject.parseObject(myJwt.getHeaderJson());
             jsonObject.replace("alg", value);

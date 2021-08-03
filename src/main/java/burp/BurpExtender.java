@@ -2,14 +2,14 @@ package burp;
 
 
 import burp.core.scanner.active.bugscanner.AWVScanner;
-import burp.core.scanner.active.jwtscanner.JWTNoVerifyScanner;
-import burp.core.scanner.active.jwtscanner.JWTNoneWeakScanner;
+import burp.core.scanner.active.jwtscanner.JWTLeakScanner;
+import burp.core.scanner.active.jwtscanner.NoVerifyLeak;
+import burp.core.scanner.active.jwtscanner.NoneLeak;
 import burp.core.scanner.active.shiroscanner.ShiroBypassScanner;
 import burp.core.service.QueueDispatcherService;
 import burp.ui.AwvsMultiTaskDlg;
 import burp.ui.Tags;
 import burp.utils.BurpAnalyzedRequest;
-import burp.utils.DomainNameRepeat;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -98,8 +98,7 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
         jwtScanner.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BurpExtender.queueDispatcherService.addData(new JWTNoneWeakScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
-                BurpExtender.queueDispatcherService.addData(new JWTNoVerifyScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
+                BurpExtender.queueDispatcherService.addData(new JWTLeakScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
             }
         });
 

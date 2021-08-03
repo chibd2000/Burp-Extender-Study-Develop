@@ -1,9 +1,7 @@
 package burp.core.scanner.active.jwtscanner;
 
 import burp.IHttpRequestResponse;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.SignatureGenerationException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -16,7 +14,7 @@ import java.util.regex.Pattern;
 public class JWTUtils {
     public static String verifyJwt(IHttpRequestResponse requestResponse){
         String jwt = "";
-        Pattern pattern = Pattern.compile(IJwtConstant.regexpJwtPattern);
+        Pattern pattern = Pattern.compile(IJWTConstant.regexpJwtPattern);
         try {
             Matcher matcher = pattern.matcher(new String(requestResponse.getRequest()));
             if (matcher.find()){
@@ -30,7 +28,7 @@ public class JWTUtils {
 
     public static boolean getJwtFlag(IHttpRequestResponse requestResponse){
         boolean flag = false;
-        Pattern pattern = Pattern.compile(IJwtConstant.regexpJwtPattern);
+        Pattern pattern = Pattern.compile(IJWTConstant.regexpJwtPattern);
         Matcher matcher = pattern.matcher(new String(requestResponse.getRequest()));
         if (matcher.find()){
             flag = true;

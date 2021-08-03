@@ -2,7 +2,7 @@ package burp.core.scanner.active.bugscanner;
 
 import burp.*;
 import burp.core.scanner.active.BaseActiveScanner;
-import burp.core.scanner.active.IBaseScanner;
+import burp.core.scanner.active.IActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 import burp.utils.HttpClientWrapper;
 import com.alibaba.fastjson.JSON;
@@ -19,7 +19,7 @@ import java.util.Map;
 /*
 * 控制类
 * */
-public class AWVScanner extends BaseActiveScanner implements ActionListener, Runnable, IBaseScanner {
+public class AWVScanner extends BaseActiveScanner implements ActionListener, Runnable, IActiveScanner {
     public HttpClientWrapper httpClientWrapper;
     public AWVSTask awvsTask;
     public Map<String, String> headers = new HashMap<>();
@@ -90,12 +90,6 @@ public class AWVScanner extends BaseActiveScanner implements ActionListener, Run
         new Thread(this).start();
     }
 
-    @Override
-    public IScanIssue exportIssue(IHttpRequestResponse httpRequestResponse) {
-        return null;
-    }
-
-
     /**
      * When an object implementing interface <code>Runnable</code> is used
      * to create a thread, starting the thread causes the object's
@@ -150,7 +144,7 @@ public class AWVScanner extends BaseActiveScanner implements ActionListener, Run
     }
 
     @Override
-    public Object getPayload() {
+    public List<String> getPayload() {
         return null;
     }
 

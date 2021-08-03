@@ -6,6 +6,8 @@ import burp.core.scanner.passive.BasePassiveScanner;
 import burp.core.scanner.passive.IPassiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 
+import java.util.List;
+
 public class GitLeakScanner extends BasePassiveScanner implements IPassiveScanner {
     public IHttpRequestResponse httpRequestResponse;
     public BurpAnalyzedRequest burpAnalyzedRequest;
@@ -20,13 +22,14 @@ public class GitLeakScanner extends BasePassiveScanner implements IPassiveScanne
         return null;
     }
 
-    @Override
-    public void scan() {
-        String requestURI = this.burpAnalyzedRequest.getRequestURI(this.httpRequestResponse);
 
+    @Override
+    public List<String> getPayload() {
+        return null;
     }
 
-    public void getPayload(){
-
+    @Override
+    public List<IHttpRequestResponse> sendPayload() {
+        return null;
     }
 }

