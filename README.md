@@ -59,7 +59,7 @@ CVE-2020-11989（shiro<1.5.3）：`http://localhost/test;/admin`   （11989的�
 
 ![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/CVE-2020-11989.png)   
 
-CVE-2016-13933（shiro<1.6）   ：`http://localhost/hello/%3b11111`   
+CVE-2020-13933（shiro<1.6）   ：`http://localhost/hello/%3b11111`   
 
 ![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/CVE-2016-13933.png)   
 
