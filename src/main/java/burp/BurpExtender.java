@@ -3,13 +3,13 @@ package burp;
 
 import burp.core.scanner.active.bugscanner.AWVScanner;
 import burp.core.scanner.active.jwtscanner.JWTLeakScanner;
-import burp.core.scanner.active.jwtscanner.NoVerifyLeak;
-import burp.core.scanner.active.jwtscanner.NoneLeak;
 import burp.core.scanner.active.shiroscanner.ShiroBypassScanner;
+import burp.core.scanner.passive.*;
 import burp.core.service.QueueDispatcherService;
-import burp.ui.AwvsMultiTaskDlg;
+import burp.ui.MultiTarget;
 import burp.ui.Tags;
 import burp.utils.BurpAnalyzedRequest;
+import burp.utils.UrlRepeatMap;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -25,6 +25,7 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
     public static IBurpExtenderCallbacks callbacks;
     public static Tags tags;
     public static QueueDispatcherService queueDispatcherService;
+    public static UrlRepeatMap<String, Integer> urlRepeatMap;
 
     public IExtensionHelpers helpers;
     public PrintWriter stdout;
@@ -44,12 +45,15 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
         BurpExtender.callbacks.setExtensionName("MyScanner");
         BurpExtender.callbacks.registerContextMenuFactory(this);
         BurpExtender.tags = new Tags(callbacks, NAME);
+        BurpExtender.urlRepeatMap = UrlRepeatMap.getUrlRepeatMap();
 
         // 下面的为成员属性
         this.helpers = callbacks.getHelpers();
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
         this.getBanner();
         this.initDispatcher();
+
+        BurpExtender.callbacks.registerScannerCheck(this);
     }
 
     public void getBanner(){
@@ -83,7 +87,6 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
     @Override
     public List<JMenuItem> createMenuItems(IContextMenuInvocation invocation) {
         ArrayList<JMenuItem> jMenuItemList = new ArrayList<>();
-
         JMenu scannerJMenu = new JMenu("Send To MyScanner");
 
         JMenuItem awvsScanner = new JMenuItem("awvsXrayScan");
@@ -102,7 +105,7 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
             }
         });
 
-        JMenuItem shiroScanner = new JMenuItem("shiroPermissionScan");
+        JMenuItem shiroScanner = new JMenuItem("ShiroPermissionScan");
         shiroScanner.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,8 +113,8 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
             }
         });
 
-        JMenuItem awvsMultiTaskDlg = new JMenuItem("awvsMultiDlg");
-        awvsMultiTaskDlg.addActionListener(new AwvsMultiTaskDlg());
+        JMenuItem awvsMultiTaskDlg = new JMenuItem("AWVSMultiDlg");
+        awvsMultiTaskDlg.addActionListener(new MultiTarget());
 
         scannerJMenu.add(awvsScanner);
         scannerJMenu.add(jwtScanner);
@@ -136,6 +139,7 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
     public List<IScanIssue> doPassiveScan(IHttpRequestResponse baseRequestResponse) {
         BurpAnalyzedRequest burpAnalyzedRequest = new BurpAnalyzedRequest();
         String requestDomain = burpAnalyzedRequest.getRequestDomain(baseRequestResponse);
+        this.stdout.println(requestDomain);
         // 过滤没必要进行扫描的域名
         if (requestDomain.toLowerCase().contains("firefox")
                 || requestDomain.toLowerCase().contains("mozilla")
@@ -147,18 +151,12 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
         ) {
             return null;
         }
-
-        List<IScanIssue> issueList = new ArrayList<IScanIssue>();
-
-        /*
-        * spring/svn/git/swagger
-        * 1、反射获取实现IPassiveScanner的所有实现类放入到任务队列中即可，剩下的都交给任务分发模块来进行解决
-        * */
-
-
-
-        issueList.add(new BurpScanIssue(null,null,null,null,null,null));
-        return issueList;
+        BurpExtender.queueDispatcherService.addData(new ActuatorLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        BurpExtender.queueDispatcherService.addData(new BackupLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        BurpExtender.queueDispatcherService.addData(new GitLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        BurpExtender.queueDispatcherService.addData(new SVNLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        BurpExtender.queueDispatcherService.addData(new SwaggerLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        return null;
     }
 
     /**

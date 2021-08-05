@@ -1,7 +1,7 @@
 package burp.core.scanner.active.jwtscanner;
 
 import burp.*;
-import burp.core.scanner.active.BaseActiveScanner;
+import burp.core.scanner.BaseScanner;
 import burp.core.scanner.active.IActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 import burp.utils.TimeOutput;
@@ -12,10 +12,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JWTLeakScanner extends BaseActiveScanner implements ActionListener, Runnable, IActiveScanner {
+public class JWTLeakScanner extends BaseScanner implements ActionListener, Runnable, IActiveScanner {
 
     public JWTLeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
-        super("JWTLeakScanner");
+        super("JWTLeak");
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
         this.burpAnalyzedRequest = new BurpAnalyzedRequest();
@@ -48,12 +48,9 @@ public class JWTLeakScanner extends BaseActiveScanner implements ActionListener,
     public List<IHttpRequestResponse> sendPayload()  {
         List<IHttpRequestResponse> responseList = new ArrayList<>();
         List<String> payloadList = this.getPayload();
-
         IRequestInfo RequestInfo = this.helpers.analyzeRequest(this.httpRequestResponse);
         List<String> headers = RequestInfo.getHeaders();
-
         List<IParameter> parameters = burpAnalyzedRequest.getAllParamters(this.httpRequestResponse);
-
         for (String payload : payloadList) {
             for (int i=0; i<headers.size(); i++) {
                 String s = headers.get(i).replaceFirst(IJWTConstant.regexpJwtPattern, payload);

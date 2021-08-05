@@ -156,7 +156,7 @@ public class Tags extends AbstractTableModel implements ITab, IMessageEditorCont
     /**
      * 新增任务至任务栏面板
      */
-    public int add(String scannerName, String url, String statusCode, String issue,IHttpRequestResponse requestResponse) {
+    public int add(String scannerName, String url, String statusCode, String issue, IHttpRequestResponse requestResponse) {
         synchronized (this.Udatas) {
             Date d = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -172,7 +172,7 @@ public class Tags extends AbstractTableModel implements ITab, IMessageEditorCont
                             issue,
                             requestResponse,
                             startTime,
-                            ""
+                            startTime
                     )
             );
             fireTableRowsInserted(id, id);

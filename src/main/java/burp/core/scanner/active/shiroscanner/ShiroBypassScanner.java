@@ -1,7 +1,7 @@
 package burp.core.scanner.active.shiroscanner;
 
 import burp.*;
-import burp.core.scanner.active.BaseActiveScanner;
+import burp.core.scanner.BaseScanner;
 import burp.core.scanner.active.IActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 
@@ -11,10 +11,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShiroBypassScanner extends BaseActiveScanner implements ActionListener, Runnable, IActiveScanner {
-
+public class ShiroBypassScanner extends BaseScanner implements ActionListener, Runnable, IActiveScanner {
     public ShiroBypassScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
-        super("ShiroBypassScanner");
+        super("ShiroBypass");
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
         this.burpAnalyzedRequest = new BurpAnalyzedRequest();
@@ -100,12 +99,11 @@ public class ShiroBypassScanner extends BaseActiveScanner implements ActionListe
         }
 
         for (IHttpRequestResponse response : responseList) {
-            byte[] baseResponse = response.getResponse();
             // 默认添加请求包
             int tagId = BurpExtender.tags.add(
                     this.getScannerName(),
                     this.burpAnalyzedRequest.getRequestDomain(response),
-                    this.helpers.analyzeResponse(baseResponse).getStatusCode() + "",
+                    this.burpAnalyzedRequest.getStatusCode(response)+"",
                     "[-] waiting for results",
                     this.httpRequestResponse
             );

@@ -39,7 +39,6 @@ public class HttpClientWrapper {
     public HttpClientWrapper(){
         this.trustAllCertificate();
     }
-
     public void trustAllCertificate(){
         try {
             SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {

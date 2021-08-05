@@ -1,7 +1,7 @@
 package burp.core.scanner.active.bugscanner;
 
 import burp.*;
-import burp.core.scanner.active.BaseActiveScanner;
+import burp.core.scanner.BaseScanner;
 import burp.core.scanner.active.IActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 import burp.utils.HttpClientWrapper;
@@ -19,13 +19,13 @@ import java.util.Map;
 /*
 * 控制类
 * */
-public class AWVScanner extends BaseActiveScanner implements ActionListener, Runnable, IActiveScanner {
+public class AWVScanner extends BaseScanner implements ActionListener, Runnable, IActiveScanner {
     public HttpClientWrapper httpClientWrapper;
     public AWVSTask awvsTask;
     public Map<String, String> headers = new HashMap<>();
 
     public AWVScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse){
-        super("AWVXrayScanner");
+        super("AWVXray");
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
         this.httpRequestResponse = httpRequestResponse;

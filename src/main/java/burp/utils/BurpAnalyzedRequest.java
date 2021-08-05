@@ -4,8 +4,10 @@ import burp.*;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -22,6 +24,10 @@ public class BurpAnalyzedRequest {
 
     public String getRequestContent(IHttpRequestResponse requestResponse){
         return new String(requestResponse.getRequest());
+    }
+
+    public String getResponseContent(IHttpRequestResponse requestResponse){
+        return new String(requestResponse.getResponse());
     }
 
     public URL getUrl(IHttpRequestResponse requestResponse) {
@@ -184,6 +190,47 @@ public class BurpAnalyzedRequest {
             }
         }
         return headersList;
+    }
+
+    public String getMethod(IExtensionHelpers helpers, IHttpRequestResponse requestResponse) {
+        IRequestInfo requestInfo = helpers.analyzeRequest(requestResponse.getRequest());
+        return requestInfo.getMethod();
+    }
+
+    /**
+     * Only works on GET requests
+     * @param helpers
+     * @param requestResponse
+     * @param appendPath
+     * @return try requests
+     */
+    public ArrayList<URL> addTraversalPaths(IExtensionHelpers helpers, IHttpRequestResponse requestResponse, String appendPath) throws MalformedURLException {
+        ArrayList<URL> traversalUrls = new ArrayList<>();
+        if (appendPath.startsWith("/")) {
+            appendPath = appendPath.substring(1);
+        }
+        if (this.getMethod(helpers, requestResponse).equals("GET")) {
+            URL url = this.getUrl(requestResponse);
+            String path = url.getPath();
+            if (path.equals("") || path.equals("/")) {
+                path = "/a";
+            }
+            List<String> pathList = Arrays.asList(path.split("/"));
+            for(int i=0;i<pathList.size();i++) {
+                List<String> temp = pathList.subList(0, i+1);
+                String tempPath = String.join("/", temp);
+                String tempUrl;
+                if (url.getProtocol().equals("http") && url.getPort() == 80) {
+                    tempUrl = String.format("%s://%s%s/%s", url.getProtocol(), url.getHost(), tempPath, appendPath);
+                } else if (url.getProtocol().equals("https") && url.getPort() == 443) {
+                    tempUrl = String.format("%s://%s%s/%s", url.getProtocol(), url.getHost(), tempPath, appendPath);
+                } else {
+                    tempUrl = String.format("%s://%s:%d%s/%s", url.getProtocol(), url.getHost(), url.getPort(), tempPath, appendPath);
+                }
+                traversalUrls.add(new URL(tempUrl));
+            }
+        }
+        return traversalUrls;
     }
 
 }
