@@ -53,11 +53,11 @@ CVE-2016-6802（shiro<1.5.0）  ：`http://localhost/admin/`
 
 CVE-2020-1957（shiro<1.5.2）  ：`http://localhost/;/admin/`  
 
-![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/CVE-2020-1957.png)   
+![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/CVE_2020_1957.png)   
 
 CVE-2020-11989（shiro<1.5.3）：`http://localhost/test;/admin`   （11989的权限绕过需要基于ContextPath的存在）
 
-![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/CVE-2020-11989.png)   
+![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/CVE_2020_11989.png)   
 
 CVE_2020_13933（shiro<1.6）   ：`http://localhost/hello/%3b11111`   
 
