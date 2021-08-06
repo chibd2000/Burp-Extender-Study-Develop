@@ -3,6 +3,7 @@ package burp.core.scanner.passive;
 import burp.BurpExtender;
 import burp.IBurpExtenderCallbacks;
 import burp.IHttpRequestResponse;
+import burp.IRequestInfo;
 import burp.core.scanner.BaseScanner;
 import burp.core.scanner.active.IActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
@@ -26,13 +27,27 @@ public class SwaggerLeakScanner extends BaseScanner implements IActiveScanner, R
 
     @Override
     public List<String> getPayload() {
-        List<String> payloadList = new ArrayList<>();
-        return payloadList;
+        String requestURI = this.burpAnalyzedRequest.getRequestURI(this.httpRequestResponse);
+        return new SwaggerLeakScanner.SwaggerPayload(requestURI).getExp();
     }
 
     @Override
     public List<IHttpRequestResponse> sendPayload() {
-        return null;
+        List<String> payloadList = this.getPayload();
+        List<IHttpRequestResponse> responseList = new ArrayList<>();
+        IRequestInfo RequestInfo = this.helpers.analyzeRequest(this.httpRequestResponse);
+        List<String> headers = RequestInfo.getHeaders();
+        for (String payload : payloadList) {
+            String s = headers.get(0);
+            if (s.contains("HTTP/1.1")) {
+                String s1 = s.replaceFirst("\\s(.*)\\s", " " + payload + " ");
+                headers.set(0, s1);
+            }
+            byte[] requestBytes = this.helpers.buildHttpMessage(headers, burpAnalyzedRequest.getRequestBody(this.httpRequestResponse));
+            IHttpRequestResponse response = this.callbacks.makeHttpRequest(this.httpRequestResponse.getHttpService(), requestBytes);
+            responseList.add(response);
+        }
+        return responseList;
     }
 
     @Override
@@ -50,16 +65,40 @@ public class SwaggerLeakScanner extends BaseScanner implements IActiveScanner, R
         }
 
         for (IHttpRequestResponse response : responseList) {
-            String responseContent = this.burpAnalyzedRequest.getResponseContent(response);
-            if (responseContent.contains("[core]")) {
+            if (this.burpAnalyzedRequest.getStatusCode(response) == 200
+            && this.burpAnalyzedRequest.getResponseContent(response).contains("swagger")
+            ){
                 BurpExtender.tags.add(
                         this.getScannerName(),
-                        this.burpAnalyzedRequest.getRequestDomain(response),
+                        this.burpAnalyzedRequest.getUrl(response).toString(),
                         this.burpAnalyzedRequest.getStatusCode(response) + "",
                         "[+] found swagger leak",
-                        this.httpRequestResponse
-                );
+                        response);
+                break;
             }
+        }
+    }
+
+    public class SwaggerPayload{
+        public List<String> expList;
+        public SwaggerPayload(String requestURI){
+            List<String> payloadList = new ArrayList<>();
+            if (requestURI.endsWith("/")) {// http://a.com/ -> / -> + env和 http://a.com/user/ -> / -> + env
+                payloadList.add(requestURI + "swagger.json");
+                payloadList.add(requestURI + "swagger-resources");
+                payloadList.add(requestURI + "v2/swagger.json");
+                payloadList.add(requestURI + "v2/swagger-resources");
+            }else{
+                payloadList.add(requestURI + "/swagger.json");
+                payloadList.add(requestURI + "/swagger-resources");
+                payloadList.add(requestURI + "/v2/swagger.json");
+                payloadList.add(requestURI + "/v2/swagger-resources");
+            }
+            this.expList = payloadList;
+        }
+
+        public List<String> getExp() {
+            return expList;
         }
     }
 }

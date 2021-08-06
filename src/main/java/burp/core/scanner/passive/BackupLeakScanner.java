@@ -1,9 +1,6 @@
 package burp.core.scanner.passive;
 
-import burp.BurpExtender;
-import burp.IBurpExtenderCallbacks;
-import burp.IHttpRequestResponse;
-import burp.IRequestInfo;
+import burp.*;
 import burp.core.scanner.BaseScanner;
 import burp.core.scanner.active.IActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
@@ -24,9 +21,8 @@ public class BackupLeakScanner extends BaseScanner implements IActiveScanner, Ru
 
     @Override
     public List<String> getPayload() {
-        List<String> payloadList = new ArrayList<>();
-        payloadList.add("111");
-        return payloadList;
+        BackupPayload backupPayload = new BackupLeakScanner.BackupPayload(this.httpRequestResponse);
+        return backupPayload.getExp();
     }
 
     @Override
@@ -37,7 +33,7 @@ public class BackupLeakScanner extends BaseScanner implements IActiveScanner, Ru
         List<String> headers = RequestInfo.getHeaders();
         for (String payload : payloadList) {
             String s = headers.get(0);
-            if (s.contains("HTTP/1.1") && s.contains("GET")) {
+            if (s.contains("HTTP/1.1")) {
                 String s1 = s.replaceFirst("\\s(.*)\\s", " " + payload + " ");
                 headers.set(0, s1);
             }
@@ -50,19 +46,6 @@ public class BackupLeakScanner extends BaseScanner implements IActiveScanner, Ru
 
     @Override
     public void run() {
-        // 判断URL的重复
-        String requestUrl = this.burpAnalyzedRequest.getRequestDomain(this.httpRequestResponse)+
-                this.burpAnalyzedRequest.getRequestURI(this.httpRequestResponse);
-        String requestUrlRoot = requestUrl.endsWith("/") ? requestUrl : requestUrl.substring(0,requestUrl.lastIndexOf("/")+1);
-        this.stdout.println("======a=========");
-        this.stdout.println(requestUrlRoot);
-        this.stdout.println("======a=========");
-        boolean check = BurpExtender.urlRepeatMap.check(requestUrlRoot);
-        if (check){
-            return;
-        }
-        BurpExtender.urlRepeatMap.add(requestUrl);
-
         List<IHttpRequestResponse> responseList = null;
         try {
             responseList = this.sendPayload(); // 发送payload
@@ -74,34 +57,45 @@ public class BackupLeakScanner extends BaseScanner implements IActiveScanner, Ru
             return;
         }
 
+
         for (IHttpRequestResponse response : responseList) {
-            String responseContent = this.burpAnalyzedRequest.getResponseContent(response);
-            if (responseContent.contains("gz")) {
-                BurpExtender.tags.add(
-                        this.getScannerName(),
-                        this.burpAnalyzedRequest.getRequestDomain(response),
-                        this.burpAnalyzedRequest.getStatusCode(response) + "",
-                        "[+] found backup leak",
-                        this.httpRequestResponse
-                );
+            List<String> headers = this.burpAnalyzedRequest.getResponseHeaders(response);
+            for (String header : headers) {
+                if (header.contains("application/x-rar-compressed")
+                        || header.contains("application/zip")
+                        || header.contains("application/x-tar")
+                        || header.contains("application/x-gzip")
+                ) {
+                    BurpExtender.tags.add(
+                            this.getScannerName(),
+                            this.burpAnalyzedRequest.getUrl(response).toString(),
+                            this.burpAnalyzedRequest.getStatusCode(response) + "",
+                            "[+] found backup leak",
+                            response);
+                    break;
+                }
             }
         }
     }
 
-    class BackupPayload{
+    public class BackupPayload{
         public List<String> expList;
-        public BackupPayload(String requestURI){
+        public BackupPayload(IHttpRequestResponse httpRequestResponse){
+            BurpAnalyzedRequest burpAnalyzedRequest = new BurpAnalyzedRequest();
+            String requestURI = burpAnalyzedRequest.getRequestURI(httpRequestResponse);
+            String host = burpAnalyzedRequest.getUrl(httpRequestResponse).getHost();
+            List<String> generatePyload = new BackupRuleBaseDomainGenerater().getRule1Payload(host);
             List<String> payloadList = new ArrayList<>();
-            if (requestURI.endsWith("/")) {// http://a.com/ -> / -> + env和 http://a.com/user/ -> / -> + env
+            if (requestURI.endsWith("/")) {
                 payloadList.add(requestURI + "www.rar");
                 payloadList.add(requestURI + "www.zip");
-                payloadList.add(requestURI + "backup.rar");
-                payloadList.add(requestURI + "actuator/httptrace");
+                payloadList.addAll(generatePyload);
             }else{
-                payloadList.add(requestURI + "/env");
-                payloadList.add(requestURI + "/trace");
-                payloadList.add(requestURI + "/actuator/env");
-                payloadList.add(requestURI + "/actuator/httptrace");
+                payloadList.add(requestURI + "/www.rar");
+                payloadList.add(requestURI + "/www.zip");
+                for (String s : generatePyload) {
+                    payloadList.add("/" + s);
+                }
             }
             this.expList = payloadList;
         }
@@ -109,9 +103,20 @@ public class BackupLeakScanner extends BaseScanner implements IActiveScanner, Ru
         public List<String> getExp() {
             return expList;
         }
-    }
 
-    class BackupDomainPyload{
-
+        public class BackupRuleBaseDomainGenerater{
+            public List<String> getRule1Payload(String host){
+                List<String> payloadList = new ArrayList<>();
+                int i = host.lastIndexOf(".");
+                String host1 = host.substring(0,i);
+                int j = host1.lastIndexOf(".");
+                String host2 = host1.substring(j+1);
+                payloadList.add("/" + host2 + ".rar");
+                payloadList.add("/" + host2 + ".zip");
+                payloadList.add("/" + host2 + ".gz");
+                payloadList.add("/" + host2 + ".tar");
+                return payloadList;
+            }
+        }
     }
 }

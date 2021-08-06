@@ -20,4 +20,13 @@ public class TestCode {
         }
         System.out.println(requestURI);
     }
+
+    @Test
+    public void test03() {
+        String host = "a.b.c.www.baidu.com";
+        int i = host.lastIndexOf(".");
+        String host1 = host.substring(0,i);
+        int j = host1.lastIndexOf(".");
+        String host2 = host1.substring(j+1);
+    }
 }

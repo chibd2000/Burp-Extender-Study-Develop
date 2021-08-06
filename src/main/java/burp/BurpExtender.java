@@ -29,6 +29,7 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
 
     public IExtensionHelpers helpers;
     public PrintWriter stdout;
+    public BurpAnalyzedRequest burpAnalyzedRequest;
     /**
      * This method is invoked when the extension is loaded. It registers an
      * instance of the
@@ -50,6 +51,7 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
         // 下面的为成员属性
         this.helpers = callbacks.getHelpers();
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
+        this.burpAnalyzedRequest = new BurpAnalyzedRequest();
         this.getBanner();
         this.initDispatcher();
 
@@ -139,7 +141,13 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
     public List<IScanIssue> doPassiveScan(IHttpRequestResponse baseRequestResponse) {
         BurpAnalyzedRequest burpAnalyzedRequest = new BurpAnalyzedRequest();
         String requestDomain = burpAnalyzedRequest.getRequestDomain(baseRequestResponse);
-        this.stdout.println(requestDomain);
+        IRequestInfo requestInfo = this.helpers.analyzeRequest(baseRequestResponse);
+        String method = requestInfo.getMethod();
+        // 判断URL的重复
+        String requestUrl = this.burpAnalyzedRequest.getRequestDomain(baseRequestResponse)+
+                this.burpAnalyzedRequest.getRequestURI(baseRequestResponse);
+        String requestUrlRoot = requestUrl.endsWith("/") ? requestUrl : requestUrl.substring(0,requestUrl.lastIndexOf("/")+1);
+        boolean check = BurpExtender.urlRepeatMap.check(requestUrlRoot);
         // 过滤没必要进行扫描的域名
         if (requestDomain.toLowerCase().contains("firefox")
                 || requestDomain.toLowerCase().contains("mozilla")
@@ -148,14 +156,18 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
                 || requestDomain.toLowerCase().contains("fofa.so")
                 || requestDomain.toLowerCase().contains("shodan.io")
                 || requestDomain.toLowerCase().contains("github.com")
+                || check || !method.equals("GET")
         ) {
             return null;
         }
+        BurpExtender.urlRepeatMap.add(requestUrl);
         BurpExtender.queueDispatcherService.addData(new ActuatorLeakScanner(BurpExtender.callbacks, baseRequestResponse));
         BurpExtender.queueDispatcherService.addData(new BackupLeakScanner(BurpExtender.callbacks, baseRequestResponse));
         BurpExtender.queueDispatcherService.addData(new GitLeakScanner(BurpExtender.callbacks, baseRequestResponse));
         BurpExtender.queueDispatcherService.addData(new SVNLeakScanner(BurpExtender.callbacks, baseRequestResponse));
         BurpExtender.queueDispatcherService.addData(new SwaggerLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        BurpExtender.queueDispatcherService.addData(new WsdlLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+//        BurpExtender.queueDispatcherService.addData(new UploadLeakScanner(BurpExtender.callbacks, baseRequestResponse));
         return null;
     }
 

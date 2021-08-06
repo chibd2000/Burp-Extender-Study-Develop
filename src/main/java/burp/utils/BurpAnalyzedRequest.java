@@ -40,6 +40,11 @@ public class BurpAnalyzedRequest {
         return iRequestInfo.getStatusCode();
     }
 
+    public List<String> getResponseHeaders(IHttpRequestResponse requestResponse) {
+        IResponseInfo iRequestInfo = this.helpers.analyzeResponse(requestResponse.getResponse());
+        return iRequestInfo.getHeaders();
+    }
+
     public byte[] getRequestBody(IHttpRequestResponse requestResponse){
         IRequestInfo requestInfo = this.helpers.analyzeRequest(requestResponse.getRequest());
         try {

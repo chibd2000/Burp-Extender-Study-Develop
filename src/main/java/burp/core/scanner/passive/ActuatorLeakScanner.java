@@ -20,9 +20,7 @@ public class ActuatorLeakScanner extends BaseScanner implements IPassiveScanner,
 
     @Override
     public List<String> getPayload() {
-        List<String> payloadList = new ArrayList<>();
         String requestURI = this.burpAnalyzedRequest.getRequestURI(this.httpRequestResponse);
-        payloadList.add(requestURI);
         return new ActuatorPayload(requestURI).getExp();
     }
 
@@ -34,15 +32,12 @@ public class ActuatorLeakScanner extends BaseScanner implements IPassiveScanner,
         List<String> headers = RequestInfo.getHeaders();
         for (String payload : payloadList) {
             String s = headers.get(0);
-            if (s.contains("HTTP/1.1") && s.contains("GET")) {
+            if (s.contains("HTTP/1.1")) {
                 String s1 = s.replaceFirst("\\s(.*)\\s", " " + payload + " ");
                 headers.set(0, s1);
             }
             byte[] requestBytes = this.helpers.buildHttpMessage(headers, burpAnalyzedRequest.getRequestBody(this.httpRequestResponse));
             IHttpRequestResponse response = this.callbacks.makeHttpRequest(this.httpRequestResponse.getHttpService(), requestBytes);
-//            this.stdout.println("===============================");
-//            this.stdout.println(new String(response.getRequest()));
-//            this.stdout.println("===============================");
             responseList.add(response);
         }
         return responseList;
@@ -50,12 +45,6 @@ public class ActuatorLeakScanner extends BaseScanner implements IPassiveScanner,
 
     @Override
     public void run() {
-        // 判断URL的重复
-        String requestUrl = this.burpAnalyzedRequest.getRequestDomain(this.httpRequestResponse)+this.burpAnalyzedRequest.getRequestURI(this.httpRequestResponse);
-        String requestUrlRoot = requestUrl.endsWith("/") ? requestUrl : requestUrl.substring(0,requestUrl.lastIndexOf("/")+1);
-        boolean check = BurpExtender.urlRepeatMap.check(requestUrlRoot);
-        if (check){ return; }
-        BurpExtender.urlRepeatMap.add(requestUrl);
         List<IHttpRequestResponse> responseList = null;
         try {
             responseList = this.sendPayload(); // 发送payload
@@ -75,7 +64,7 @@ public class ActuatorLeakScanner extends BaseScanner implements IPassiveScanner,
                     || responseBody.contains("{\"traces\":[{\"timestamp\"")){// httptrace
                 BurpExtender.tags.add(
                         this.getScannerName(),
-                        requestUrl,
+                        this.burpAnalyzedRequest.getUrl(response).toString(),
                         this.burpAnalyzedRequest.getStatusCode(response) + "",
                         "[+] found actuator leak",
                         response);
@@ -84,7 +73,7 @@ public class ActuatorLeakScanner extends BaseScanner implements IPassiveScanner,
         }
     }
 
-    class ActuatorPayload{
+    public class ActuatorPayload{
         public List<String> expList;
         public ActuatorPayload(String requestURI){
             List<String> payloadList = new ArrayList<>();

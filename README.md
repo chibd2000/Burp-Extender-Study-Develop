@@ -73,14 +73,14 @@ CVE-2020-17523（shiro<1.7.0）：没写
 2、了解Burp插件开发流程  
 3、在测试中可能一些路径会遗漏，所以想写一个被动扫描的检测插件
 
-spring：敏感路径泄露
+spring：接口泄露
 
 svn：源码泄露
 
 git：源码泄露 
 
-interface-doc：接口API泄露
+doc：接口泄露
+
+![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/passive.png)   
 
 
-
-还没写，这个星期六星期天可能会补上
