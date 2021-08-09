@@ -15,7 +15,7 @@ import java.util.List;
 /*
  * svn相关的源码泄露
  * */
-public class SVNLeakScanner extends BaseScanner implements IActiveScanner, Runnable{
+public class SVNLeakScanner extends BaseScanner implements IPassiveScanner{
     public SVNLeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse) {
         super("SVNLeak");
         this.callbacks = callbacks;
@@ -50,7 +50,6 @@ public class SVNLeakScanner extends BaseScanner implements IActiveScanner, Runna
         return responseList;
     }
 
-    @Override
     public void run() {
         List<IHttpRequestResponse> responseList = null;
 

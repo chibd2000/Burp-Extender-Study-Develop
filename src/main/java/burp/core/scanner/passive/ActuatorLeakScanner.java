@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActuatorLeakScanner extends BaseScanner implements IPassiveScanner, Runnable{
+public class ActuatorLeakScanner extends BaseScanner implements IPassiveScanner{
     public ActuatorLeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse) {
         super("ActuatorLeak");
         this.callbacks = callbacks;
@@ -43,7 +43,6 @@ public class ActuatorLeakScanner extends BaseScanner implements IPassiveScanner,
         return responseList;
     }
 
-    @Override
     public void run() {
         List<IHttpRequestResponse> responseList = null;
         try {

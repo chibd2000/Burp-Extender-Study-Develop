@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackupLeakScanner extends BaseScanner implements IActiveScanner, Runnable{
+public class BackupLeakScanner extends BaseScanner implements IPassiveScanner{
     public BackupLeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse) {
         super("BackupLeak");
         this.callbacks = callbacks;
@@ -44,7 +44,6 @@ public class BackupLeakScanner extends BaseScanner implements IActiveScanner, Ru
         return responseList;
     }
 
-    @Override
     public void run() {
         List<IHttpRequestResponse> responseList = null;
         try {

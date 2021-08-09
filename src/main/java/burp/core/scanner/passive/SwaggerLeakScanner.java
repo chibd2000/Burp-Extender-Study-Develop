@@ -15,7 +15,7 @@ import java.util.List;
 /*
 * 接口文档导致泄露的相关敏感API
 * */
-public class SwaggerLeakScanner extends BaseScanner implements IActiveScanner, Runnable{
+public class SwaggerLeakScanner extends BaseScanner implements IPassiveScanner{
     public SwaggerLeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse) {
         super("SwaggerLeak");
         this.callbacks = callbacks;
@@ -50,7 +50,6 @@ public class SwaggerLeakScanner extends BaseScanner implements IActiveScanner, R
         return responseList;
     }
 
-    @Override
     public void run() {
         List<IHttpRequestResponse> responseList = null;
 

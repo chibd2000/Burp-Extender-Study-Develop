@@ -92,28 +92,13 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
         JMenu scannerJMenu = new JMenu("Send To MyScanner");
 
         JMenuItem awvsScanner = new JMenuItem("awvsXrayScan");
-        awvsScanner.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BurpExtender.queueDispatcherService.addData(new AWVScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
-            }
-        });
+        awvsScanner.addActionListener(new AWVScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
 
         JMenuItem jwtScanner = new JMenuItem("JWTScan");
-        jwtScanner.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BurpExtender.queueDispatcherService.addData(new JWTLeakScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
-            }
-        });
+        jwtScanner.addActionListener(new JWTLeakScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
 
         JMenuItem shiroScanner = new JMenuItem("ShiroPermissionScan");
-        shiroScanner.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BurpExtender.queueDispatcherService.addData(new ShiroBypassScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
-            }
-        });
+        shiroScanner.addActionListener(new ShiroBypassScanner(BurpExtender.callbacks, invocation.getSelectedMessages()[0]));
 
         JMenuItem awvsMultiTaskDlg = new JMenuItem("AWVSMultiDlg");
         awvsMultiTaskDlg.addActionListener(new MultiTarget());
@@ -161,13 +146,14 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory, IScanne
             return null;
         }
         BurpExtender.urlRepeatMap.add(requestUrl);
-        BurpExtender.queueDispatcherService.addData(new ActuatorLeakScanner(BurpExtender.callbacks, baseRequestResponse));
-        BurpExtender.queueDispatcherService.addData(new BackupLeakScanner(BurpExtender.callbacks, baseRequestResponse));
-        BurpExtender.queueDispatcherService.addData(new GitLeakScanner(BurpExtender.callbacks, baseRequestResponse));
-        BurpExtender.queueDispatcherService.addData(new SVNLeakScanner(BurpExtender.callbacks, baseRequestResponse));
-        BurpExtender.queueDispatcherService.addData(new SwaggerLeakScanner(BurpExtender.callbacks, baseRequestResponse));
-        BurpExtender.queueDispatcherService.addData(new WsdlLeakScanner(BurpExtender.callbacks, baseRequestResponse));
-//        BurpExtender.queueDispatcherService.addData(new UploadLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        List<IPassiveScanner> passiveScannerList = new ArrayList<>();
+        passiveScannerList.add(new ActuatorLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        passiveScannerList.add(new BackupLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        passiveScannerList.add(new GitLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        passiveScannerList.add(new SVNLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        passiveScannerList.add(new SwaggerLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        passiveScannerList.add(new WsdlLeakScanner(BurpExtender.callbacks, baseRequestResponse));
+        BurpExtender.queueDispatcherService.addData(passiveScannerList);
         return null;
     }
 

@@ -8,7 +8,7 @@ import burp.utils.BurpAnalyzedRequest;
 import java.io.PrintWriter;
 import java.util.List;
 
-public class UploadLeakScanner extends BaseScanner implements IPassiveScanner, Runnable{
+public class UploadLeakScanner extends BaseScanner implements IPassiveScanner{
     public UploadLeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse) {
         super("UploadLeak");
         this.callbacks = callbacks;
@@ -28,18 +28,6 @@ public class UploadLeakScanner extends BaseScanner implements IPassiveScanner, R
         return null;
     }
 
-    /**
-     * When an object implementing interface <code>Runnable</code> is used
-     * to create a thread, starting the thread causes the object's
-     * <code>run</code> method to be called in that separately executing
-     * thread.
-     * <p>
-     * The general contract of the method <code>run</code> is that it may
-     * take any action whatsoever.
-     *
-     * @see Thread#run()
-     */
-    @Override
     public void run() {
 
     }

@@ -12,9 +12,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WsdlLeakScanner extends BaseScanner implements IActiveScanner, Runnable{
+public class WsdlLeakScanner extends BaseScanner implements IPassiveScanner{
     public WsdlLeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse) {
-        super("WsdlLeak");
+        super("wsdlLeak");
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
         this.burpAnalyzedRequest = new BurpAnalyzedRequest();
@@ -47,7 +47,6 @@ public class WsdlLeakScanner extends BaseScanner implements IActiveScanner, Runn
         return responseList;
     }
 
-    @Override
     public void run() {
         List<IHttpRequestResponse> responseList = null;
 
@@ -63,7 +62,8 @@ public class WsdlLeakScanner extends BaseScanner implements IActiveScanner, Runn
 
         for (IHttpRequestResponse response : responseList) {
             String responseBody = new String(this.burpAnalyzedRequest.getResponseBody(response));
-            if (responseBody.contains("Services")){ //env
+            if (responseBody.contains("Services") || responseBody.contains("services")
+            || responseBody.contains("http://ws.apache.org/axis2")){ //env
                 BurpExtender.tags.add(
                         this.getScannerName(),
                         this.burpAnalyzedRequest.getUrl(response).toString(),
@@ -81,8 +81,10 @@ public class WsdlLeakScanner extends BaseScanner implements IActiveScanner, Runn
             List<String> payloadList = new ArrayList<>();
             if (requestURI.endsWith("/")) {// http://a.com/ -> / -> + env和 http://a.com/user/ -> / -> + env
                 payloadList.add(requestURI + "services");
+                payloadList.add(requestURI + "axis2/services/Cat/getClassPath");
             }else{
                 payloadList.add(requestURI + "/services");
+                payloadList.add(requestURI + "/axis2/services/Cat/getClassPath");
             }
             this.expList = payloadList;
         }

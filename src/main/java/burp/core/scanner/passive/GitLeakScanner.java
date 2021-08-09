@@ -5,7 +5,6 @@ import burp.IBurpExtenderCallbacks;
 import burp.IHttpRequestResponse;
 import burp.IRequestInfo;
 import burp.core.scanner.BaseScanner;
-import burp.core.scanner.active.IActiveScanner;
 import burp.utils.BurpAnalyzedRequest;
 
 import java.io.PrintWriter;
@@ -15,7 +14,7 @@ import java.util.List;
 /*
 * git相关的源码泄露
 * */
-public class GitLeakScanner extends BaseScanner implements IActiveScanner, Runnable{
+public class GitLeakScanner extends BaseScanner implements IPassiveScanner{
     public GitLeakScanner(IBurpExtenderCallbacks callbacks, IHttpRequestResponse httpRequestResponse) {
         super("GitLeak");
         this.callbacks = callbacks;
@@ -50,7 +49,6 @@ public class GitLeakScanner extends BaseScanner implements IActiveScanner, Runna
         return responseList;
     }
 
-    @Override
     public void run() {
         List<IHttpRequestResponse> responseList = null;
 
