@@ -1,9 +1,10 @@
 # Burp-Plugin-Develop
 
+前言: 谢谢chacha教的东西^.^
 
 ## 基于Burp开发的主动探测jwt签名算法None和签名的有效性
 
-开发目的：  
+开发目的:
 
 1、学习java  
 2、了解Burp插件开发流程  
@@ -11,11 +12,11 @@
 
 ![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/JWTNone.png)
 
-使用说明：
+使用说明:
 
 1、在检测的时候需要在Repeater进行发包一次，因为这里实现的逻辑是通过返回包的大小与原来返回包的大小进行比较，所以需要先得到正常的数据包的返回大小才可以  
 
-更新内容：  
+更新内容:  
 
 1、添加了一个无签名验证的模块放了上去（最近刚碰到的一个情景，没有对第三段签名进行校验，导致第二段中传输的数据可以直接进行伪造），现在有探测None签名算法模块和无签名验证算法模块，现在一共两个jwt相关的模块实现（2021.7.31-添加模块）  
 
@@ -23,7 +24,7 @@
 
 ## 基于Burp开发的图形化主动添加AWVSXray扫描
 
-开发目的：  
+开发目的: 
 
 1、学习java  
 2、了解Burp插件开发流程  
@@ -31,17 +32,17 @@
 
 ![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/AWVSXray.png)   
 
-更新内容：
+更新内容:
 
 1、如果header头字段中的内容带上了双引号，则添加扫描的时候失败，这里通过转义header内容中的双引号来进行解决（2021.7.30-已修改） 
 
-使用说明：
+使用说明:
 
 1、将工程文件中的db.properties中的相关xray和awvs进行配置放到burp目录即可，可以看extender中是否有提示读取到相关配置信息即可
 
 ## 基于Burp开发的主动shiro已知版本探测权限绕过
 
-开发目的：  
+开发目的: 
 
 1、学习java  
 2、了解Burp插件开发流程  
@@ -71,16 +72,25 @@ CVE-2020-17523（shiro<1.7.0）：没写
 
 1、学习java  
 2、了解Burp插件开发流程  
-3、在测试中可能一些路径会遗漏，所以想写一个被动扫描的检测插件
+3、在测试中可能一些路径会遗漏，所以想写一个被动扫描对每层目录都会进行扫描目录进行检测的插件
 
-spring：接口泄露
+spring: actuator未授权接口泄露
 
-svn：源码泄露
+svn: 源码泄露
 
-git：源码泄露 
+git: 源码泄露
 
-doc：接口泄露
+swagger doc: 接口泄露
+
+wsdl: 服务泄露
+
+backup: 规则域名备份文件泄露
 
 ![image](https://github.com/chibd2000/Burp-Extender-Study-Develop/blob/main/img/passive.png)   
 
+每个域名对应的每层目录只会扫描一遍，不会多扫...
+
+##总结
+
+简单的学习了下java的插件编写，还有很多的API没有用到，这些就当作自己的入门代码，以后还有的话再慢慢补上...
 

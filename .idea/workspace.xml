@@ -57,7 +57,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../javaidea/SrcSuite-main" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -201,6 +201,7 @@
       <workItem from="1628232694361" duration="15752000" />
       <workItem from="1628433144901" duration="620000" />
       <workItem from="1628508945361" duration="3572000" />
+      <workItem from="1628512614605" duration="837000" />
     </task>
     <servers />
   </component>
@@ -249,10 +250,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="0" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1628075812547" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1628433773321">
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1628512677276">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1628433773321" />
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1628512677276" />
     <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1628264793690">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
